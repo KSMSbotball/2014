@@ -13,9 +13,9 @@ int main()
 	set_servo_position(0,315);
 	msleep(1000);
 	
-	motor(0,500);
-	motor(2,-500);
-	msleep(1000);
+	motor(0,-500);
+	motor(2,-420);
+	msleep(750);
 	
 	disable_servos();
 	
