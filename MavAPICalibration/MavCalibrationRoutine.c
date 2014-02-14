@@ -11,7 +11,7 @@ void moveForward(int distanceInInches);
 int main()
 {
 	printf("test calibration 1.3\n");
-	
+
 	moveForward(5);
 	set_a_button_text("Click me to continue\n");
 	while (a_button() == 0) {
@@ -35,6 +35,6 @@ void moveForward(int distanceInInches) {
 	mrp(LEFT_MOTOR, SPEED_FWD, clicks);
 	bmd(RIGHT_MOTOR);
 	bmd(LEFT_MOTOR);
-	
+
 	printf("done moving %ld...", distanceInInches);
 }
