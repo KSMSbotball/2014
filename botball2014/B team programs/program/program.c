@@ -2,6 +2,7 @@
 #define RIGHT_MOTOR 2
 #define SPEED_FWD 700
 #define SPEED_BWD 500
+#define SPEED_LFT 500
 void claw_up();
 void claw_down ();
 void forward (double inches);
@@ -10,9 +11,9 @@ void backward (double inches);
 int main(){
 	//enable_servos();
 	//claw_up();
-	forward(30);
-	left_turn(1.3);
-	forward(10);
+	forward(31);
+	left_turn(3);
+	forward(11);
 	//backward(1.8);
 	disable_servos();
 	return 0;
@@ -31,10 +32,10 @@ void forward (double inches){
 	bmd(LEFT_MOTOR);
 
 }
-void left_turn(double seconds){
-motor(LEFT_MOTOR,500);
-msleep(seconds * 1000);
-	ao();
+void left_turn(double inches){
+	long clicks = 156.25l * inches;
+	mrp(LEFT_MOTOR, SPEED_LFT, clicks);
+	bmd(LEFT_MOTOR);
 }
 void backward (double inches) {
 long clicks = 156.25l * inches;
