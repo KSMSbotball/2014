@@ -2,12 +2,12 @@
 //quick and dirty program to see if mav API is more reliable than motor
 //to improve dead recknoning outcome.
 #define RIGHT_MOTOR 2
-#define LEFT_MOTOR 0
+#define LEFT_MOTOR 1
 #define SPEED_FWD 700
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1400
+#define RIGHT_ANGLE_CLICKS 1087
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -15,13 +15,11 @@ void rightAngle(int direction);
 
 int main()
 {
-<<<<<<< HEAD
 	printf("test calibration 1.4\n");
-	
 	printf("testing right angle turn");
-	moveForward(30);
+	moveForward(31);
 	rightAngle(RIGHT);
-	moveForward(10);
+	moveForward(7.3);
 	printf("program finished, POMS should be in...\n");
 	return 0;
 }
