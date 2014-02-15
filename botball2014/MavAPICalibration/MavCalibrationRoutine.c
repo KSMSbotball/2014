@@ -7,7 +7,7 @@
 #define SPEED_BWD -500
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1450
+#define RIGHT_ANGLE_CLICKS 1400
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -35,7 +35,7 @@ int main()
 	moveForward(2);
 	*/
 	printf("testing right angle turn");
-	moveForward(10);
+	moveForward(30);
 	rightAngle(RIGHT);
 	moveForward(10);
 	printf("program finished\n");
@@ -45,6 +45,16 @@ int main()
 //convenience function to make code reading easier
 void moveBackward(int distanceInInches) {
 	moveForward(distanceInInches * -1);
+	printf("starting to move bwrds for %d\n",distanceInInches);
+	//convert inches to clicks
+	long clicks = -156.25l * distanceInInches;
+	mrp(RIGHT_MOTOR, SPEED_BWD, clicks);
+	mrp(LEFT_MOTOR, SPEED_BWD, clicks);
+	bmd(RIGHT_MOTOR);
+	bmd(LEFT_MOTOR);
+	
+	printf("done moving %d...", distanceInInches);
+
 }
 
 //uses mrp (move to relative position) and convert from inches
@@ -57,13 +67,8 @@ void moveForward(int distanceInInches) {
 	mrp(LEFT_MOTOR, SPEED_FWD, clicks);
 	bmd(RIGHT_MOTOR);
 	bmd(LEFT_MOTOR);
-<<<<<<< HEAD
 	
 	printf("done moving %d...", distanceInInches);
-=======
-
-	printf("done moving %ld...", distanceInInches);
->>>>>>> 54f1150b8f40d8e40bd73689c68b9bbf15136053
 }
 
 //right angle turn function
