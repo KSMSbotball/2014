@@ -35,7 +35,7 @@ void moveForward(int distanceInInches) {
 printf("starting to move for %d\n",distanceInInches);
 //convert inches to clicks
 long clicksLeft = 160 * distanceInInches;
-long clicksRight = clicksLeft * 0.9;// * 0.8;
+long clicksRight = clicksLeft;// * 0.8;
 mrp(RIGHT_MOTOR, SPEED_FWD, clicksRight);
 mrp(LEFT_MOTOR, SPEED_FWD, clicksLeft);
 bmd(RIGHT_MOTOR);

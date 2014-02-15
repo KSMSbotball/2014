@@ -2,10 +2,10 @@
 
 int main()
 {	
-	motor(2, 70);
-	motor(0, -70);
-	msleep(900);
-	
+	mrp(0, 500, -663);
+	mrp(2, 500, 663);
+	bmd(0);
+	bmd(2);
 	/*
 	motor(2, -70);
 	motor(0, 70);
