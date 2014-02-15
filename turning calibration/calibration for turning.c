@@ -1,6 +1,8 @@
 // Created on Sun February 2 2014
 #define SPEED_LEFT 50
 #define SPEED_RIGHT 50
+#define LEFT_MOTOR 0
+#define RIGHT_MOTOR 2
 void left(double seconds);
 void right(double seconds);
 int main()
@@ -9,26 +11,26 @@ int main()
 	while (a_button() == 0){
 		msleep(50);
 	}
-	motor(2,SPEED_RIGHT);
+	motor(RIGHT_MOTOR,SPEED_RIGHT);
 	return 0;
 }
 void left(double seconds){
-	motor(0,50);
-	motor(2,50);
+	motor(LEFT_MOTOR,50);
+	motor(RIGHT_MOTOR,50);
 	msleep(3000);
-	motor(0,SPEED_LEFT);
+	motor(LEFT_MOTOR,SPEED_LEFT);
 	msleep(seconds * 1000);
-	motor(0,50);
-	motor(2,50);
+	motor(LEFT_MOTOR,50);
+	motor(RIGHT_MOTOR,50);
 	msleep(3000);
 }
 void right(double seconds){
-	motor(0,50);
-	motor(2,50);
+	motor(LEFT_MOTOR,50);
+	motor(RIGHT_MOTOR,50);
 	msleep(3000);
-	motor(0,SPEED_RIGHT);
+	motor(RIGHT_MOTOR,SPEED_RIGHT);
 	msleep(seconds * 1000);
-	motor(0,50);
-	motor(2,50);
+	motor(LEFT_MOTOR,50);
+	motor(RIGHT_MOTOR,50);
 	msleep(3000);
 }

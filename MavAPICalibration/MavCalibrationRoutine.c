@@ -15,9 +15,15 @@ void rightAngle(int direction);
 
 int main()
 {
+<<<<<<< HEAD
 	printf("test calibration 1.4\n");
 	
 /*	moveForward(5);
+=======
+	printf("test calibration 1.3\n");
+
+	moveForward(5);
+>>>>>>> 54f1150b8f40d8e40bd73689c68b9bbf15136053
 	set_a_button_text("Click me to continue\n");
 	while (a_button() == 0) {
 		msleep(25);
@@ -51,8 +57,13 @@ void moveForward(int distanceInInches) {
 	mrp(LEFT_MOTOR, SPEED_FWD, clicks);
 	bmd(RIGHT_MOTOR);
 	bmd(LEFT_MOTOR);
+<<<<<<< HEAD
 	
 	printf("done moving %d...", distanceInInches);
+=======
+
+	printf("done moving %ld...", distanceInInches);
+>>>>>>> 54f1150b8f40d8e40bd73689c68b9bbf15136053
 }
 
 //right angle turn function
