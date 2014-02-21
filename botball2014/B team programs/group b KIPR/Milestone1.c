@@ -11,8 +11,8 @@
 #define RIGHT_ANGLE_CLICKS_BACK -1450
 #define FV_ANGLE_CLICKS 700
 #define FV_ANGLE_CLICKS_BACK -700
-#define UP_SERVO
-#define DOWN_SERVO
+#define UP_SERVO 1246
+#define DOWN_SERVO 998
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
