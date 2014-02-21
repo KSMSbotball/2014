@@ -11,6 +11,8 @@
 #define RIGHT_ANGLE_CLICKS_BACK -1450
 #define FV_ANGLE_CLICKS 700
 #define FV_ANGLE_CLICKS_BACK -700
+#define UP_SERVO
+#define DOWN_SERVO
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -22,6 +24,8 @@ void fortyFiveAngleBwd(int direction);
 int main()
 {
 	printf("test calibration 1.93\n");
+	
+	enable_servos();
 
 	moveForward(22);
 	fortyFiveAngleFwd(RIGHT);
@@ -40,6 +44,9 @@ int main()
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
+	
+	disable_servo();
+	
 	return 0;
 }
 
