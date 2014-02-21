@@ -26,13 +26,17 @@ int main()
 	printf("test calibration 1.93\n");
 	
 	enable_servos();
+	
+	clawUp();
+	moveBackward(1.5);
 
 	moveForward(22);
+	clawDown();
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(2);
-	
+	clawUp();
 	
 	//Milestone 2
 	moveBackward(11);
@@ -125,3 +129,13 @@ void fortyFiveAngleBwd(int direction) {
 		printf("ooopppsss I did not recognize your turn... so I ignored it");
 	}
 }
+
+void clawUp(){
+	set_servo_position(0,UP_SERVO);
+}
+	
+void clawDown(){
+	set_servo_position(0,DOWN_SERVO);
+}
+	
+	
