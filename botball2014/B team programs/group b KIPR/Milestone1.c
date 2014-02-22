@@ -37,7 +37,7 @@ int main()
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
-	moveForward(2);
+	moveForward(1.5);
 	clawUp();
 	
 	//Milestone 2
@@ -51,7 +51,7 @@ int main()
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
 	
-	disable_servo();
+	disable_servos();
 	
 	return 0;
 }
