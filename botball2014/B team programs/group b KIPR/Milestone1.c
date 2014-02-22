@@ -20,6 +20,8 @@ void rightAngleFwd(int direction);
 void rightAngleBwd(int direction);
 void fortyFiveAngleFwd(int direction);
 void fortyFiveAngleBwd(int direction);
+void clawUp();
+void clawDown();
 
 int main()
 {
