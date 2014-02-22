@@ -7,8 +7,8 @@
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1478
-#define RIGHT_ANGLE_CLICKS_BACK -1478
+#define RIGHT_ANGLE_CLICKS 1425
+#define RIGHT_ANGLE_CLICKS_BACK -1425
 #define FV_ANGLE_CLICKS 739
 #define FV_ANGLE_CLICKS_BACK -739
 #define UP_SERVO 1246
@@ -16,7 +16,7 @@
 #define UP_SERVO_CUBE 1500
 #define DOWN_SERVO_CUBE 1398
 //declaration
-void moveForward(int distanceInInches); 
+void moveForward(double distanceInInches); 
 void moveBackward(int distanceInInces);
 void rightAngleFwd(int direction);
 void rightAngleBwd(int direction);
@@ -29,7 +29,7 @@ void clear_motor_position_counter(int motor_nbr);
 
 int main()
 {
-	printf("test calibration 1.94\n");
+	printf("test calibration 1.9\n");
 	
     clear_motor_position_counter(0);
 	clear_motor_position_counter(2);
@@ -42,15 +42,14 @@ int main()
 	moveForward(22);
 	clawDown();
 	rightAngleFwd(LEFT);
-	moveBackward(3);
+	moveBackward(4);
 	rightAngleFwd(LEFT);
 	moveBackward(25);
+	moveForward(3);
 	rightAngleFwd(LEFT);
-	moveForward(10);
 	moveForward(5);
-	rightAngleFwd(LEFT);
 	clawUp();
-	moveForward(14);
+	moveForward(4);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
@@ -84,7 +83,7 @@ void moveBackward(int distanceInInches) {
 
 //uses mrp (move to relative position) and convert from inches
 //to motor units. This is pretty accurate (a lot more than motor at speed)
-void moveForward(int distanceInInches) {
+void moveForward(double distanceInInches) {
 	//printf("starting to move for %d\n",distanceInInches);
 	//convert inches to clicks
 	long clicks = 156.25l * distanceInInches;
