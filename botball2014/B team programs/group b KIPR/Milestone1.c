@@ -13,6 +13,8 @@
 #define FV_ANGLE_CLICKS_BACK -700
 #define UP_SERVO 1246
 #define DOWN_SERVO 1015
+#define UP_SERVO_CUBE 1500
+#define DOWN_SERVO_CUBE 1398
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -40,18 +42,18 @@ int main()
 	moveForward(22);
 	clawDown();
 	rightAngleFwd(LEFT);
-	moveBackward(1.5);
-	rightAngleFwd(LEFT);
 	moveBackward(3);
 	rightAngleFwd(LEFT);
-	moveForward(1.5);
+	moveBackward(25);
+	rightAngleFwd(LEFT);
+	moveForward(10);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(1.5);
 	clawUp();*/
 	
-	//Milestone 2
+	/*Milestone 2
 	moveBackward(11);
 	rightAngleBwd(RIGHT);
 	moveBackward(9);
@@ -62,7 +64,7 @@ int main()
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
-	
+	*/
 	disable_servos();
 	
 	return 0;
@@ -151,6 +153,12 @@ void clawUp(){
 void clawDown(){
 	set_servo_position(0,DOWN_SERVO);
 }
-	void clear_motor_position_counter(int motor_nbr);
+void clawUpCube(){
+    set_servo_position(0,UP_SERVO_CUBE);
+}
+void clawDownCube(){
+    set_servo_position(0,DOWN_SERVO_CUBE);
+}
+    
 	void clear_motor_position_counter(int motor_nbr);
 	
