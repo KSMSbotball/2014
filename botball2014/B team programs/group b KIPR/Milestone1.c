@@ -25,7 +25,7 @@ void clawDown();
 
 int main()
 {
-	printf("test calibration 1.93\n");
+	printf("test calibration 1.94\n");
 	
 	enable_servos();
 	
