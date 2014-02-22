@@ -1,6 +1,3 @@
-// Created on Thu February 6 2014
-//quick and dirty program to see if mav API is more reliable than motor
-//to improve dead recknoning outcome.
 #define RIGHT_MOTOR 2
 #define LEFT_MOTOR 0
 #define SPEED_FWD 700
@@ -13,8 +10,6 @@
 #define FV_ANGLE_CLICKS_BACK -739
 #define UP_SERVO 1246
 #define DOWN_SERVO 1015
-#define UP_SERVO_CUBE 1500
-#define DOWN_SERVO_CUBE 1398
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -29,51 +24,10 @@ void clear_motor_position_counter(int motor_nbr);
 
 int main()
 {
-	printf("test calibration 1.94\n");
-	
-    clear_motor_position_counter(0);
-	clear_motor_position_counter(2);
-	
-	enable_servos();
-	
-	clawUp();
-	moveBackward(3);
-
-	moveForward(22);
-	clawDown();
-	rightAngleFwd(LEFT);
-	moveBackward(3);
-	rightAngleFwd(LEFT);
-	moveBackward(25);
-	rightAngleFwd(LEFT);
-	moveForward(10);
-<<<<<<< HEAD
-=======
 	moveForward(5);
 	rightAngleFwd(LEFT);
-	clawUp();
-	moveForward(14);
->>>>>>> 43e2c3980130272fa697d7e682e624a5c224e48b
-	/*fortyFiveAngleFwd(RIGHT);
-	moveForward(13.5);
-	fortyFiveAngleFwd(RIGHT);
-	moveForward(1.5);
-	clawUp();*/
-	
-	/*Milestone 2
-	moveBackward(11);
 	rightAngleBwd(RIGHT);
-	moveBackward(9);
-	moveForward(9);
-	rightAngleFwd(RIGHT);
-	moveForward(22);
-	clawDown();
-	fortyFiveAngleFwd(LEFT);
-	moveForward(20);
-	//printf("program finished, POMS should be in...\n");
-	*/
-	disable_servos();
-	
+	moveForward(10);
 	return 0;
 }
 
@@ -160,12 +114,6 @@ void clawUp(){
 void clawDown(){
 	set_servo_position(0,DOWN_SERVO);
 }
-void clawUpCube(){
-    set_servo_position(0,UP_SERVO_CUBE);
-}
-void clawDownCube(){
-    set_servo_position(0,DOWN_SERVO_CUBE);
-}
-    
+	void clear_motor_position_counter(int motor_nbr);
 	void clear_motor_position_counter(int motor_nbr);
 	
