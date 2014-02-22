@@ -7,7 +7,7 @@
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1450
+#define RIGHT_ANGLE_CLICKS 1475
 #define RIGHT_ANGLE_CLICKS_BACK -1450
 #define FV_ANGLE_CLICKS 700
 #define FV_ANGLE_CLICKS_BACK -700
@@ -40,18 +40,20 @@ int main()
 	moveForward(22);
 	clawDown();
 	rightAngleFwd(LEFT);
-	moveBackward(1.5);
-	rightAngleFwd(LEFT);
 	moveBackward(3);
 	rightAngleFwd(LEFT);
-	moveForward(1.5);
+	moveBackward(25);
+	moveForward(5);
+	rightAngleFwd(LEFT);
+	clawUp();
+	moveForward(14);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(1.5);
 	clawUp();*/
 	
-	//Milestone 2
+	/*Milestone 2
 	moveBackward(11);
 	rightAngleBwd(RIGHT);
 	moveBackward(9);
@@ -62,7 +64,7 @@ int main()
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
-	
+	*/
 	disable_servos();
 	
 	return 0;
