@@ -22,10 +22,14 @@ void fortyFiveAngleFwd(int direction);
 void fortyFiveAngleBwd(int direction);
 void clawUp();
 void clawDown();
-
+void clear_motor_position_counter(int motor_nbr);
+void clear_motor_position_counter(int motor_nbr);
 int main()
 {
 	printf("test calibration 1.94\n");
+	
+    clear_motor_position_counter(0);
+	clear_motor_position_counter(2);
 	
 	enable_servos();
 	
@@ -37,7 +41,7 @@ int main()
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
-	moveForward(2);
+	moveForward(1.5);
 	clawUp();
 	
 	//Milestone 2
@@ -51,7 +55,7 @@ int main()
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
 	
-	disable_servo();
+	disable_servos();
 	
 	return 0;
 }
@@ -139,5 +143,6 @@ void clawUp(){
 void clawDown(){
 	set_servo_position(0,DOWN_SERVO);
 }
-	
+	void clear_motor_position_counter(int motor_nbr);
+	void clear_motor_position_counter(int motor_nbr);
 	
