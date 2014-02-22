@@ -24,6 +24,7 @@ void clawUp();
 void clawDown();
 void clear_motor_position_counter(int motor_nbr);
 void clear_motor_position_counter(int motor_nbr);
+
 int main()
 {
 	printf("test calibration 1.94\n");
@@ -34,7 +35,7 @@ int main()
 	enable_servos();
 	
 	clawUp();
-	moveBackward(1.5);
+	moveBackward(3);
 
 	moveForward(22);
 	clawDown();
