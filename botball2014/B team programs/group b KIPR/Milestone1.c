@@ -7,12 +7,14 @@
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1475
-#define RIGHT_ANGLE_CLICKS_BACK -1450
-#define FV_ANGLE_CLICKS 700
-#define FV_ANGLE_CLICKS_BACK -700
+#define RIGHT_ANGLE_CLICKS 1478
+#define RIGHT_ANGLE_CLICKS_BACK -1478
+#define FV_ANGLE_CLICKS 739
+#define FV_ANGLE_CLICKS_BACK -739
 #define UP_SERVO 1246
 #define DOWN_SERVO 1015
+#define UP_SERVO_CUBE 1500
+#define DOWN_SERVO_CUBE 1398
 //declaration
 void moveForward(int distanceInInches); 
 void moveBackward(int distanceInInces);
@@ -43,6 +45,8 @@ int main()
 	moveBackward(3);
 	rightAngleFwd(LEFT);
 	moveBackward(25);
+	rightAngleFwd(LEFT);
+	moveForward(10);
 	moveForward(5);
 	rightAngleFwd(LEFT);
 	clawUp();
@@ -153,6 +157,12 @@ void clawUp(){
 void clawDown(){
 	set_servo_position(0,DOWN_SERVO);
 }
-	void clear_motor_position_counter(int motor_nbr);
+void clawUpCube(){
+    set_servo_position(0,UP_SERVO_CUBE);
+}
+void clawDownCube(){
+    set_servo_position(0,DOWN_SERVO_CUBE);
+}
+    
 	void clear_motor_position_counter(int motor_nbr);
 	
