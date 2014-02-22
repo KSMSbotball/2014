@@ -39,11 +39,17 @@ int main()
 
 	moveForward(22);
 	clawDown();
-	fortyFiveAngleFwd(RIGHT);
+	rightAngleFwd(LEFT);
+	moveBackward(1.5);
+	rightAngleFwd(LEFT);
+	moveBackward(3);
+	rightAngleFwd(LEFT);
+	moveForward(1.5);
+	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
 	moveForward(1.5);
-	clawUp();
+	clawUp();*/
 	
 	//Milestone 2
 	moveBackward(11);
@@ -52,6 +58,7 @@ int main()
 	moveForward(9);
 	rightAngleFwd(RIGHT);
 	moveForward(22);
+	clawDown();
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
