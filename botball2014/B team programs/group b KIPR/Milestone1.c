@@ -40,7 +40,7 @@ int main()
 	moveBackward(3);
 	moveForward(22);
 	clawDown();
-	msleep(500);
+	ao();
 	printf("i is turning\n");
 	rightAngleFwd(LEFT);
 	moveBackward(4);
