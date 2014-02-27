@@ -7,8 +7,6 @@
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1425
-#define RIGHT_ANGLE_CLICKS_BACK -1425
 #define RIGHT_ANGLE_CLICKS 1400
 #define RIGHT_ANGLE_CLICKS_BACK -1400
 #define FV_ANGLE_CLICKS 739
@@ -19,7 +17,6 @@
 #define DOWN_SERVO_CUBE 1398
 //declaration
 void moveForward(double distanceInInches); 
-void moveBackward(int distanceInInces);
 void moveBackward(double distanceInInces);
 void rightAngleFwd(int direction);
 void rightAngleBwd(int direction);
@@ -42,11 +39,10 @@ int main()
 	
 	clawUp();
 	moveBackward(3);
-	msleep(200);
 	moveForward(22);
-	msleep(200);
 	clawDown();
-	rightAngleFwd(LEFT);
+	rightAngleF+
+	wd(LEFT);
 	moveBackward(4);
 	rightAngleFwd(LEFT);
 	moveBackward(25);
@@ -55,26 +51,18 @@ int main()
 	moveForward(5);
 	clawUp();
 	moveForward(4);
-	msleep(200);
 	rightAngleFwd(LEFT);
 	moveBackward(25);
-	msleep(200);
 	moveForward(3);
-	msleep(200);
 	rightAngleFwd(LEFT);
 	moveForward(5);
-	msleep(200);
 	rightAngleFwd(LEFT);
 	moveBackward(25);
-	msleep(200);
 	moveForward(3);
-	msleep(200);
 	rightAngleFwd(LEFT);
 	moveForward(5);
-	msleep(200);
 	clawUp();
 	moveForward(5);
-	msleep(200);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
