@@ -64,6 +64,14 @@ int main()
 	rightAngleFwd(LEFT);
 	moveForward(5);
 	msleep(200);
+	rightAngleFwd(LEFT);
+	moveBackward(25);
+	msleep(200);
+	moveForward(3);
+	msleep(200);
+	rightAngleFwd(LEFT);
+	moveForward(5);
+	msleep(200);
 	clawUp();
 	moveForward(5);
 	msleep(200);
