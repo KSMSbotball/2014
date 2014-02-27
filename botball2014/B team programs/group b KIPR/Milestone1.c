@@ -28,7 +28,6 @@ void clawDown();
 
 int main()
 {
-	printf("test calibration 1.9\n");
 	printf("test calibration 2.00, new forward and backward funtions.\n");
 	
 	
@@ -41,10 +40,12 @@ int main()
 	moveBackward(3);
 	moveForward(22);
 	clawDown();
-	rightAngleF+
-	wd(LEFT);
+	msleep(500);
+	printf("i is turning\n");
+	rightAngleFwd(LEFT);
 	moveBackward(4);
 	rightAngleFwd(LEFT);
+	printf("i is finished turning\n");
 	moveBackward(25);
 	moveForward(3);
 	rightAngleFwd(LEFT);
@@ -135,12 +136,10 @@ void moveForward(double distanceInInches) {
 		//right has moved ahead, let's slow down right until left catches up
 			mav(RIGHT_MOTOR, SPEED_FWD/2);
 			mav(LEFT_MOTOR, SPEED_FWD);
-			printf("move fwd:correction right: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
 			mav(RIGHT_MOTOR, SPEED_FWD);
 			mav(LEFT_MOTOR, SPEED_FWD/2);
-			printf("move fwd:correction left: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
