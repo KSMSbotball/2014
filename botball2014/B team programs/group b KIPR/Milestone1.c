@@ -9,6 +9,8 @@
 #define LEFT 57
 #define RIGHT_ANGLE_CLICKS 1425
 #define RIGHT_ANGLE_CLICKS_BACK -1425
+#define RIGHT_ANGLE_CLICKS 1400
+#define RIGHT_ANGLE_CLICKS_BACK -1400
 #define FV_ANGLE_CLICKS 739
 #define FV_ANGLE_CLICKS_BACK -739
 #define UP_SERVO 1250
@@ -18,28 +20,31 @@
 //declaration
 void moveForward(double distanceInInches); 
 void moveBackward(int distanceInInces);
+void moveBackward(double distanceInInces);
 void rightAngleFwd(int direction);
 void rightAngleBwd(int direction);
 void fortyFiveAngleFwd(int direction);
 void fortyFiveAngleBwd(int direction);
 void clawUp();
 void clawDown();
-void clear_motor_position_counter(int motor_nbr);
-void clear_motor_position_counter(int motor_nbr);
+
 
 int main()
 {
 	printf("test calibration 1.9\n");
+	printf("test calibration 2.00, new forward and backward funtions.\n");
+	
+	
+	enable_servos();
 	
     clear_motor_position_counter(0);
 	clear_motor_position_counter(2);
 	
-	enable_servos();
-	
 	clawUp();
 	moveBackward(3);
-
+	msleep(200);
 	moveForward(22);
+	msleep(200);
 	clawDown();
 	rightAngleFwd(LEFT);
 	moveBackward(4);
@@ -50,6 +55,18 @@ int main()
 	moveForward(5);
 	clawUp();
 	moveForward(4);
+	msleep(200);
+	rightAngleFwd(LEFT);
+	moveBackward(25);
+	msleep(200);
+	moveForward(3);
+	msleep(200);
+	rightAngleFwd(LEFT);
+	moveForward(5);
+	msleep(200);
+	clawUp();
+	moveForward(5);
+	msleep(200);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
 	fortyFiveAngleFwd(RIGHT);
@@ -72,7 +89,8 @@ int main()
 	
 	return 0;
 }
-
+/*
+trying a new way for move forwaed and backwards
 //convenience function to make code reading easier
 void moveBackward(int distanceInInches) {
 	//printf("starting to move backwards for %d\n",distanceInInches);
@@ -94,6 +112,103 @@ void moveForward(double distanceInInches) {
 	
 	//printf("done moving %d...", distanceInInches);
 }
+*/
+//uses a home made mrp (move to relative position) and convert from inches
+//to motor units.
+void moveForward(double distanceInInches) {
+	//printf("starting to move for %d\n",distanceInInches);
+	//convert inches to clicks
+	int clicks =(int) (156.25l * distanceInInches);
+	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
+	
+	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
+	int differential  = 0 ;
+	while (current_position_left <= (initial_position_left + clicks) ||
+		current_position_right <= (initial_position_right + clicks) ) {
+		
+		//first let's see if one motor is going ahead of the other
+		differential = current_position_left - initial_position_left - 
+				(current_position_right - initial_position_right);
+		if (differential > -25 && differential < 25 ) {
+		//counter are around the same 
+			mav(RIGHT_MOTOR, SPEED_FWD);
+			mav(LEFT_MOTOR, SPEED_FWD);
+		} else if (differential < 0 ) {
+		//right has moved ahead, let's slow down right until left catches up
+			mav(RIGHT_MOTOR, SPEED_FWD/2);
+			mav(LEFT_MOTOR, SPEED_FWD);
+			printf("move fwd:correction right: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+		} else {
+		//left has moved ahead, let's slow down left until right catches up
+			mav(RIGHT_MOTOR, SPEED_FWD);
+			mav(LEFT_MOTOR, SPEED_FWD/2);
+			printf("move fwd:correction left: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+		}
+		msleep(100);
+		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+		current_position_left = get_motor_position_counter(LEFT_MOTOR);
+	}
+	
+	//printf("done moving %d...", distanceInInches);
+}
+
+
+//uses a home made mrp (move to relative position) and convert from inches
+//to motor units.
+void moveBackward(double distanceInInches) {
+	//printf("starting to move for %d\n",distanceInInches);
+	//convert inches to clicks
+	int clicks =(int) (156.25l * distanceInInches);
+	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
+	
+	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
+	int differential  = 0 ;
+	while (current_position_left >= (initial_position_left - clicks) ||
+		current_position_right >= (initial_position_right - clicks) ) {
+		
+		//first let's see if one motor is going ahead of the other
+		differential = current_position_left - initial_position_left - 
+				(current_position_right - initial_position_right);
+		if (differential > -25 && differential < 25 ) {
+			mav(RIGHT_MOTOR, SPEED_BWD);
+			mav(LEFT_MOTOR, SPEED_BWD);
+		} else if (differential > 0 ) {
+			mav(RIGHT_MOTOR, SPEED_BWD/2);
+			mav(LEFT_MOTOR, SPEED_BWD);
+		} else {
+			mav(RIGHT_MOTOR, SPEED_BWD);
+			mav(LEFT_MOTOR, SPEED_BWD/2);
+		}
+		msleep(100);
+		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+		current_position_left = get_motor_position_counter(LEFT_MOTOR);
+	}
+	
+	//printf("done moving %d...", distanceInInches);
+}
+
+
+//right angle turn function
+void rightAngleFwdA(int direction) {
+	clear_motor_position_counter(LEFT_MOTOR);
+	clear_motor_position_counter(RIGHT_MOTOR);
+	if (direction == RIGHT) {
+		//printf("test turning right");
+		mrp(LEFT_MOTOR,SPEED_FWD,RIGHT_ANGLE_CLICKS);
+		bmd(LEFT_MOTOR);
+	} else if (direction == LEFT) {
+		//printf ("test turning left");
+		mrp(RIGHT_MOTOR, SPEED_FWD, RIGHT_ANGLE_CLICKS) ;
+		bmd(RIGHT_MOTOR);
+	} else {
+		printf("ooopppsss I did not recognize your turn... so I ignored it");
+	}
+}
+
 
 //right angle turn function
 void rightAngleFwd(int direction) {
@@ -162,6 +277,3 @@ void clawUpCube(){
 void clawDownCube(){
     set_servo_position(0,DOWN_SERVO_CUBE);
 }
-    
-	void clear_motor_position_counter(int motor_nbr);
-	
