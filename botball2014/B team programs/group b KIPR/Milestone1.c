@@ -5,6 +5,7 @@
 #define LEFT_MOTOR 0
 #define SPEED_FWD 700
 #define SPEED_BWD -700
+#define ADJUST_SPEED 0.75
 #define RIGHT 76
 #define LEFT 57
 #define RIGHT_ANGLE_CLICKS 1400
@@ -134,14 +135,14 @@ void moveForward(double distanceInInches) {
 			mav(LEFT_MOTOR, SPEED_FWD);
 		} else if (differential < 0 ) {
 		//right has moved ahead, let's slow down right until left catches up
-			mav(RIGHT_MOTOR, SPEED_FWD/2);
+			mav(RIGHT_MOTOR,(int) (SPEED_FWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_FWD);
-			printf("adjusting left L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			printf("adjusting LEFT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
 			mav(RIGHT_MOTOR, SPEED_FWD);
-			mav(LEFT_MOTOR, SPEED_FWD/2);
-			printf("adjusting right L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			mav(LEFT_MOTOR, (int) (SPEED_FWD*ADJUST_SPEED));
+			printf("adjusting RIGHT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
@@ -175,13 +176,13 @@ void moveBackward(double distanceInInches) {
 			mav(RIGHT_MOTOR, SPEED_BWD);
 			mav(LEFT_MOTOR, SPEED_BWD);
 		} else if (differential > 0 ) {
-			mav(RIGHT_MOTOR, SPEED_BWD/2);
+			mav(RIGHT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_BWD);
-			printf("adjusting left L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			printf("bwd adjusting left L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 			mav(RIGHT_MOTOR, SPEED_BWD);
-			mav(LEFT_MOTOR, SPEED_BWD/2);
-			printf("adjusting right L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			mav(LEFT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
+			printf("bwd adjusting right L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
