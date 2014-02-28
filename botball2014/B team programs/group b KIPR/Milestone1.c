@@ -28,7 +28,7 @@ void clawDown();
 
 int main()
 {
-	printf("test calibration 2.00, new forward and backward funtions.\n");
+	printf("test calibration 2.01, fixed fowd and bwd function bugs.\n");
 	
 	
 	enable_servos();
@@ -37,10 +37,10 @@ int main()
 	clear_motor_position_counter(2);
 	
 	clawUp();
-	moveBackward(3);
+	moveBackward(1);
 	moveForward(22);
 	clawDown();
-	ao();
+	
 	printf("i is turning\n");
 	rightAngleFwd(LEFT);
 	moveBackward(4);
@@ -73,11 +73,11 @@ int main()
 	/*Milestone 2
 	moveBackward(11);
 	rightAngleBwd(RIGHT);
-	moveBackward(9);
+	moveBackward(10);
 	moveForward(9);
 	rightAngleFwd(RIGHT);
 	moveForward(22);
-	clawDown();
+	clawDownCube();
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
@@ -136,16 +136,19 @@ void moveForward(double distanceInInches) {
 		//right has moved ahead, let's slow down right until left catches up
 			mav(RIGHT_MOTOR, SPEED_FWD/2);
 			mav(LEFT_MOTOR, SPEED_FWD);
+			printf("adjusting left L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
 			mav(RIGHT_MOTOR, SPEED_FWD);
 			mav(LEFT_MOTOR, SPEED_FWD/2);
+			printf("adjusting right L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
-	
+	mav(RIGHT_MOTOR,0);
+	mav(LEFT_MOTOR,0);
 	//printf("done moving %d...", distanceInInches);
 }
 
@@ -174,15 +177,19 @@ void moveBackward(double distanceInInches) {
 		} else if (differential > 0 ) {
 			mav(RIGHT_MOTOR, SPEED_BWD/2);
 			mav(LEFT_MOTOR, SPEED_BWD);
+			printf("adjusting left L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 			mav(RIGHT_MOTOR, SPEED_BWD);
 			mav(LEFT_MOTOR, SPEED_BWD/2);
+			printf("adjusting right L: %d R: %d", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
-	
+	mav(RIGHT_MOTOR,0);
+	mav(LEFT_MOTOR,0);
+
 	//printf("done moving %d...", distanceInInches);
 }
 
