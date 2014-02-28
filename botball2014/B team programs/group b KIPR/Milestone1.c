@@ -10,8 +10,8 @@
 #define LEFT 57
 #define RIGHT_ANGLE_CLICKS 1400
 #define RIGHT_ANGLE_CLICKS_BACK -1400
-#define FV_ANGLE_CLICKS 739
-#define FV_ANGLE_CLICKS_BACK -739
+#define FV_ANGLE_CLICKS 744
+#define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1250
 #define DOWN_SERVO 1015
 #define UP_SERVO_CUBE 1500
@@ -53,7 +53,6 @@ int main()
 	moveForward(5);
 	clawUp();
 	moveForward(4);
-	rightAngleFwd(LEFT);
 	moveBackward(25);
 	moveForward(3);
 	rightAngleFwd(LEFT);
