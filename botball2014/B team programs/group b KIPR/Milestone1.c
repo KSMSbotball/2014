@@ -5,17 +5,17 @@
 #define LEFT_MOTOR 0
 #define SPEED_FWD 700
 #define SPEED_BWD -700
-#define ADJUST_SPEED 0.75
+#define ADJUST_SPEED 0.65
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1420
-#define RIGHT_ANGLE_CLICKS_BACK -1410
+#define RIGHT_ANGLE_CLICKS 1430
+#define RIGHT_ANGLE_CLICKS_BACK -1430
 #define FV_ANGLE_CLICKS 744
 #define FV_ANGLE_CLICKS_BACK -744
-#define UP_SERVO 1250
+#define UP_SERVO 1500
 #define DOWN_SERVO 1015
-#define UP_SERVO_CUBE 1500
-#define DOWN_SERVO_CUBE 1398
+#define UP_SERVO_CUBE 1900
+#define DOWN_SERVO_CUBE 1300
 //declaration
 void moveForward(double distanceInInches); 
 void moveBackward(double distanceInInces);
@@ -30,7 +30,7 @@ void clawUpCube();
 void reset_counters();
 int main()
 {
-	printf("test calibration 2.02, fixed fowd and bwd function bugs.\n");
+	printf("test calibration 2.03, fixed fowd and bwd function bugs.\n");
 	
 	
 	enable_servos();
@@ -55,8 +55,10 @@ int main()
 	moveForward(5);
 	clawUp();
 	moveForward(6);
+	
+	
 	//Milestone 2
-	moveBackward(11);
+	/* moveBackward(11);
 	reset_counters();
 	rightAngleBwd(RIGHT);
 	moveBackward(10);
@@ -68,7 +70,7 @@ int main()
 	reset_counters();
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
-	
+	*/
 	disable_servos();
 	
 	return 0;
@@ -79,6 +81,7 @@ int main()
 void moveForward(double distanceInInches) {
 	//printf("starting to move for %d\n",distanceInInches);
 	//convert inches to clicks
+	reset_counters();
 	int clicks =(int) (156.25l * distanceInInches);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
@@ -122,6 +125,7 @@ void moveForward(double distanceInInches) {
 void moveBackward(double distanceInInches) {
 	//printf("starting to move for %d\n",distanceInInches);
 	//convert inches to clicks
+	reset_counters();
 	int clicks =(int) (156.25l * distanceInInches);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
@@ -160,8 +164,7 @@ void moveBackward(double distanceInInches) {
 
 //right angle turn function
 void rightAngleFwdA(int direction) {
-	clear_motor_position_counter(LEFT_MOTOR);
-	clear_motor_position_counter(RIGHT_MOTOR);
+	reset_counters();
 	if (direction == RIGHT) {
 		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_FWD,RIGHT_ANGLE_CLICKS);
