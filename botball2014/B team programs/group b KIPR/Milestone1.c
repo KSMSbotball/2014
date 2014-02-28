@@ -8,8 +8,8 @@
 #define ADJUST_SPEED 0.75
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1400
-#define RIGHT_ANGLE_CLICKS_BACK -1400
+#define RIGHT_ANGLE_CLICKS 1420
+#define RIGHT_ANGLE_CLICKS_BACK -1410
 #define FV_ANGLE_CLICKS 744
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1250
@@ -25,91 +25,55 @@ void fortyFiveAngleFwd(int direction);
 void fortyFiveAngleBwd(int direction);
 void clawUp();
 void clawDown();
-
-
+void clawDownCube();
+void clawUpCube();
+void reset_counters();
 int main()
 {
-	printf("test calibration 2.01, fixed fowd and bwd function bugs.\n");
+	printf("test calibration 2.02, fixed fowd and bwd function bugs.\n");
 	
 	
 	enable_servos();
-	
-    clear_motor_position_counter(0);
-	clear_motor_position_counter(2);
-	
+    reset_counters();
 	clawUp();
 	moveBackward(1);
 	moveForward(22);
 	clawDown();
 	
 	printf("i is turning\n");
+	reset_counters();
 	rightAngleFwd(LEFT);
 	moveBackward(4);
+	reset_counters();
 	rightAngleFwd(LEFT);
 	printf("i is finished turning\n");
 	moveBackward(25);
 	moveForward(3);
+	reset_counters();
 	rightAngleFwd(LEFT);
+	reset_counters();
 	moveForward(5);
 	clawUp();
-	moveForward(4);
-	moveBackward(25);
-	moveForward(3);
-	rightAngleFwd(LEFT);
-	moveForward(5);
-	rightAngleFwd(LEFT);
-	moveBackward(25);
-	moveForward(3);
-	rightAngleFwd(LEFT);
-	moveForward(5);
-	clawUp();
-	moveForward(5);
-	/*fortyFiveAngleFwd(RIGHT);
-	moveForward(13.5);
-	fortyFiveAngleFwd(RIGHT);
-	moveForward(1.5);
-	clawUp();*/
-	
-	/*Milestone 2
+	moveForward(6);
+	//Milestone 2
 	moveBackward(11);
+	reset_counters();
 	rightAngleBwd(RIGHT);
 	moveBackward(10);
 	moveForward(9);
+	reset_counters();
 	rightAngleFwd(RIGHT);
 	moveForward(22);
 	clawDownCube();
+	reset_counters();
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
-	//printf("program finished, POMS should be in...\n");
-	*/
+	
 	disable_servos();
 	
 	return 0;
 }
-/*
-trying a new way for move forwaed and backwards
-//convenience function to make code reading easier
-void moveBackward(int distanceInInches) {
-	//printf("starting to move backwards for %d\n",distanceInInches);
-	//convert inches to clicks
-	moveForward(distanceInInches * -1);
 
-}
-
-//uses mrp (move to relative position) and convert from inches
-//to motor units. This is pretty accurate (a lot more than motor at speed)
-void moveForward(double distanceInInches) {
-	//printf("starting to move for %d\n",distanceInInches);
-	//convert inches to clicks
-	long clicks = 156.25l * distanceInInches;
-	mrp(RIGHT_MOTOR, SPEED_FWD, clicks);
-	mrp(LEFT_MOTOR, SPEED_FWD, clicks);
-	bmd(RIGHT_MOTOR);
-	bmd(LEFT_MOTOR);
-	
-	//printf("done moving %d...", distanceInInches);
-}
-*/
 //uses a home made mrp (move to relative position) and convert from inches
 //to motor units.
 void moveForward(double distanceInInches) {
@@ -278,4 +242,8 @@ void clawUpCube(){
 }
 void clawDownCube(){
     set_servo_position(0,DOWN_SERVO_CUBE);
+}
+void reset_counters(){
+	 clear_motor_position_counter(0);
+	clear_motor_position_counter(2);
 }
