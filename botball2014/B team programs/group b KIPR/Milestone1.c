@@ -8,7 +8,7 @@
 #define RIGHT 76
 #define LEFT 57
 #define RIGHT_ANGLE_CLICKS 1400
-#define RIGHT_ANGLE_CLICKS_BACK -1400
+#define RIGHT_ANGLE_CLICKS_BACK -1400   
 #define FV_ANGLE_CLICKS 739
 #define FV_ANGLE_CLICKS_BACK -739
 #define UP_SERVO 1250
@@ -39,7 +39,7 @@ int main()
 	clawUp();
 	moveBackward(3);
 	msleep(200);
-	moveForward(22);
+	moveForward(21);
 	msleep(200);
 	clawDown();
 	rightAngleFwd(LEFT);
@@ -54,7 +54,7 @@ int main()
 	moveForward(5);
 	msleep(200);
 	clawUp();
-	moveForward(5);
+	moveForward(4);
 	msleep(200);
 	/*fortyFiveAngleFwd(RIGHT);
 	moveForward(13.5);
@@ -74,7 +74,7 @@ int main()
 	moveForward(20);
 	//printf("program finished, POMS should be in...\n");
 	*/
-	disable_servos();
+	disable_servos();//hello
 	
 	return 0;
 }
