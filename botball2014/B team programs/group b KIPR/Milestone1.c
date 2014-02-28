@@ -5,12 +5,20 @@
 #define LEFT_MOTOR 0
 #define SPEED_FWD 700
 #define SPEED_BWD -700
+#define ADJUST_SPEED 0.75
 #define RIGHT 76
 #define LEFT 57
+<<<<<<< HEAD
 #define RIGHT_ANGLE_CLICKS 1400
 #define RIGHT_ANGLE_CLICKS_BACK -1400   
 #define FV_ANGLE_CLICKS 739
 #define FV_ANGLE_CLICKS_BACK -739
+=======
+#define RIGHT_ANGLE_CLICKS 1420
+#define RIGHT_ANGLE_CLICKS_BACK -1410
+#define FV_ANGLE_CLICKS 744
+#define FV_ANGLE_CLICKS_BACK -744
+>>>>>>> 33b3c454838ed94d3307e7a0346f09491fa9afef
 #define UP_SERVO 1250
 #define DOWN_SERVO 1015
 #define UP_SERVO_CUBE 1500
@@ -24,36 +32,43 @@ void fortyFiveAngleFwd(int direction);
 void fortyFiveAngleBwd(int direction);
 void clawUp();
 void clawDown();
-
-
+void clawDownCube();
+void clawUpCube();
+void reset_counters();
 int main()
 {
-	printf("test calibration 2.00, new forward and backward funtions.\n");
+	printf("test calibration 2.02, fixed fowd and bwd function bugs.\n");
 	
 	
 	enable_servos();
-	
-    clear_motor_position_counter(0);
-	clear_motor_position_counter(2);
-	
+    reset_counters();
 	clawUp();
+<<<<<<< HEAD
 	moveBackward(3);
 	msleep(200);
 	moveForward(21);
 	msleep(200);
+=======
+	moveBackward(1);
+	moveForward(22);
+>>>>>>> 33b3c454838ed94d3307e7a0346f09491fa9afef
 	clawDown();
+	
+	printf("i is turning\n");
+	reset_counters();
 	rightAngleFwd(LEFT);
 	moveBackward(4);
-	msleep(200);
+	reset_counters();
 	rightAngleFwd(LEFT);
+	printf("i is finished turning\n");
 	moveBackward(25);
-	msleep(200);
 	moveForward(3);
-	msleep(200);
+	reset_counters();
 	rightAngleFwd(LEFT);
+	reset_counters();
 	moveForward(5);
-	msleep(200);
 	clawUp();
+<<<<<<< HEAD
 	moveForward(4);
 	msleep(200);
 	/*fortyFiveAngleFwd(RIGHT);
@@ -63,45 +78,34 @@ int main()
 	clawUp();*/
 	
 	/*Milestone 2
+=======
+	moveForward(6);
+	//Milestone 2
+>>>>>>> 33b3c454838ed94d3307e7a0346f09491fa9afef
 	moveBackward(11);
+	reset_counters();
 	rightAngleBwd(RIGHT);
-	moveBackward(9);
+	moveBackward(10);
 	moveForward(9);
+	reset_counters();
 	rightAngleFwd(RIGHT);
 	moveForward(22);
-	clawDown();
+	clawDownCube();
+	reset_counters();
 	fortyFiveAngleFwd(LEFT);
 	moveForward(20);
+<<<<<<< HEAD
 	//printf("program finished, POMS should be in...\n");
 	*/
 	disable_servos();//hello
+=======
+	
+	disable_servos();
+>>>>>>> 33b3c454838ed94d3307e7a0346f09491fa9afef
 	
 	return 0;
 }
-/*
-trying a new way for move forwaed and backwards
-//convenience function to make code reading easier
-void moveBackward(int distanceInInches) {
-	//printf("starting to move backwards for %d\n",distanceInInches);
-	//convert inches to clicks
-	moveForward(distanceInInches * -1);
 
-}
-
-//uses mrp (move to relative position) and convert from inches
-//to motor units. This is pretty accurate (a lot more than motor at speed)
-void moveForward(double distanceInInches) {
-	//printf("starting to move for %d\n",distanceInInches);
-	//convert inches to clicks
-	long clicks = 156.25l * distanceInInches;
-	mrp(RIGHT_MOTOR, SPEED_FWD, clicks);
-	mrp(LEFT_MOTOR, SPEED_FWD, clicks);
-	bmd(RIGHT_MOTOR);
-	bmd(LEFT_MOTOR);
-	
-	//printf("done moving %d...", distanceInInches);
-}
-*/
 //uses a home made mrp (move to relative position) and convert from inches
 //to motor units.
 void moveForward(double distanceInInches) {
@@ -126,20 +130,21 @@ void moveForward(double distanceInInches) {
 			mav(LEFT_MOTOR, SPEED_FWD);
 		} else if (differential < 0 ) {
 		//right has moved ahead, let's slow down right until left catches up
-			mav(RIGHT_MOTOR, SPEED_FWD/2);
+			mav(RIGHT_MOTOR,(int) (SPEED_FWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_FWD);
-			printf("move fwd:correction right: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+			printf("adjusting LEFT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
 			mav(RIGHT_MOTOR, SPEED_FWD);
-			mav(LEFT_MOTOR, SPEED_FWD/2);
-			printf("move fwd:correction left: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+			mav(LEFT_MOTOR, (int) (SPEED_FWD*ADJUST_SPEED));
+			printf("adjusting RIGHT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
-	
+	mav(RIGHT_MOTOR,0);
+	mav(LEFT_MOTOR,0);
 	//printf("done moving %d...", distanceInInches);
 }
 
@@ -166,17 +171,21 @@ void moveBackward(double distanceInInches) {
 			mav(RIGHT_MOTOR, SPEED_BWD);
 			mav(LEFT_MOTOR, SPEED_BWD);
 		} else if (differential > 0 ) {
-			mav(RIGHT_MOTOR, SPEED_BWD/2);
+			mav(RIGHT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_BWD);
+			printf("bwd adjusting left L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 			mav(RIGHT_MOTOR, SPEED_BWD);
-			mav(LEFT_MOTOR, SPEED_BWD/2);
+			mav(LEFT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
+			printf("bwd adjusting right L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
-	
+	mav(RIGHT_MOTOR,0);
+	mav(LEFT_MOTOR,0);
+
 	//printf("done moving %d...", distanceInInches);
 }
 
@@ -265,4 +274,8 @@ void clawUpCube(){
 }
 void clawDownCube(){
     set_servo_position(0,DOWN_SERVO_CUBE);
+}
+void reset_counters(){
+	 clear_motor_position_counter(0);
+	clear_motor_position_counter(2);
 }
