@@ -111,8 +111,8 @@ void moveForwardTilBlackLine(double distanceInInches) {
 //
 void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
 	//printf("starting to move for %d\n",distanceInInches);
-	//checkLightSensor 0 do not check light sensor
-	//                 1 do check light sensor and stop when it is over black or void
+	//checkLightSensor  do not check light sensor: see #define values
+	//                  do check light sensor and stop when it is over black or void
 	
 	reset_counters();
 
