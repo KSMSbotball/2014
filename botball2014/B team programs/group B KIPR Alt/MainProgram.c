@@ -5,7 +5,7 @@
 #define LEFT_MOTOR 0
 #define SPEED_FWD 700
 #define SPEED_BWD -700
-#define ADJUST_SPEED 0.75
+#define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
 #define RIGHT_ANGLE_CLICKS 1420
@@ -37,7 +37,7 @@ void clawUpCube();
 void reset_counters();
 int main()
 {
-	printf("test 2.02, fixed fowd and bwd function bugs.\n");
+	printf("test 3.00, fixed fowd and bwd function bugs.\n");
 	
 	
 	enable_servos();
@@ -137,6 +137,7 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
 		//counter are around the same 
 			mav(RIGHT_MOTOR, SPEED_FWD);
 			mav(LEFT_MOTOR, SPEED_FWD);
+			printf("going straight, L: %d, R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else if (differential < 0 ) {
 		//right has moved ahead, let's slow down right until left catches up
 			mav(RIGHT_MOTOR,(int) (SPEED_FWD*ADJUST_SPEED));
@@ -183,11 +184,11 @@ void moveBackward(double distanceInInches) {
 		} else if (differential > 0 ) {
 			mav(RIGHT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_BWD);
-			printf("bwd adjusting left L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			//printf("bwd adjusting left L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 			mav(RIGHT_MOTOR, SPEED_BWD);
 			mav(LEFT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
-			printf("bwd adjusting right L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			//printf("bwd adjusting right L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
@@ -309,6 +310,6 @@ void clawDownCube(){
     set_servo_position(0,DOWN_SERVO_CUBE);
 }
 void reset_counters(){
-	 clear_motor_position_counter(0);
-	clear_motor_position_counter(2);
+	clear_motor_position_counter(RIGHT_MOTOR);
+	clear_motor_position_counter(LEFT_MOTOR);
 }
