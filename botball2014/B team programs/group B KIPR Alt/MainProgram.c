@@ -16,7 +16,7 @@
 #define DOWN_SERVO 1015
 #define UP_SERVO_CUBE 1900
 #define DOWN_SERVO_CUBE 1398
-#define LIGHT_SENSOR 1
+#define LIGHT_SENSOR 0
 #define CHECK_LIGHT_SENSOR 101
 #define DONOT_CHECK_LIGHT_SENSOR 197
 
@@ -42,19 +42,19 @@ int main()
 	shut_down_in(115);
 	enable_servos();
 	clawUp();
-	moveBackward(1);
+	moveBackward(3);
 	moveForward(22);
 	clawDown();
 	
 	//we have the Poms
-	rightAngleBwd(RIGHT);
+	rightAngleBwd(LEFT);
 	//bump against the upper storage area
-	moveBackward(15);
+	moveBackward(20);
 	msleep(100);
 	moveForward(20);
-	rightAngleBwd(RIGHT);
+	rightAngleBwd(LEFT);
 	//bump against upper PVC side
-	moveBackward(15);
+	moveBackward(20);
 	//move towards dropping poms
 	
 	
@@ -92,25 +92,16 @@ int main()
 	return 0;
 }
 
-//uses a home made mrp (move to relative position) and convert from inches
-//to motor units.
 void moveForward(double distanceInInches) {	
 	moveForwardRoutine(distanceInInches, DONOT_CHECK_LIGHT_SENSOR);
 }
+//moves forward without light sensor
 
-//uses a home made mrp (move to relative position) and convert from inches
-//to motor units. KIPR stops when it no longer is on the white surface (either black tape
-// or void)
-//
 void moveForwardTilBlackLine(double distanceInInches) {
 	moveForwardRoutine(distanceInInches, CHECK_LIGHT_SENSOR);
 }
-
-//uses a home made mrp (move to relative position) and convert from inches
-//to motor units.
-//
+//moves forward with light sensor
 void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
-	//printf("starting to move for %d\n",distanceInInches);
 	//checkLightSensor  do not check light sensor: see #define values
 	//                  do check light sensor and stop when it is over black or void
 	
@@ -156,13 +147,11 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
 	//turn off motors completely
 	ao();
 	msleep(100);
-	//printf("done moving %d...", distanceInInches);
 }
 
 //uses a home made mrp (move to relative position) and convert from inches
 //to motor units.
 void moveBackward(double distanceInInches) {
-	//printf("starting to move for %d\n",distanceInInches);
 	reset_counters();
 	//convert inches to clicks
 	int clicks =(int) (156.25l * distanceInInches);
@@ -184,11 +173,9 @@ void moveBackward(double distanceInInches) {
 		} else if (differential > 0 ) {
 			mav(RIGHT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_BWD);
-			//printf("bwd adjusting left L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		} else {
 			mav(RIGHT_MOTOR, SPEED_BWD);
 			mav(LEFT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
-			//printf("bwd adjusting right L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
 		}
 		msleep(100);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
@@ -198,7 +185,6 @@ void moveBackward(double distanceInInches) {
 	ao();
 	msleep(100);
 
-	//printf("done moving %d...", distanceInInches);
 }
 
 
@@ -206,11 +192,9 @@ void moveBackward(double distanceInInches) {
 void rightAngleFwdA(int direction) {
 	reset_counters();
 	if (direction == RIGHT) {
-		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_FWD,RIGHT_ANGLE_CLICKS);
 		bmd(LEFT_MOTOR);
 	} else if (direction == LEFT) {
-		//printf ("test turning left");
 		mrp(RIGHT_MOTOR, SPEED_FWD, RIGHT_ANGLE_CLICKS) ;
 		bmd(RIGHT_MOTOR);
 	} else {
@@ -227,11 +211,9 @@ void rightAngleFwdA(int direction) {
 void rightAngleFwd(int direction) {
 	reset_counters();
 	if (direction == RIGHT) {
-		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_FWD,RIGHT_ANGLE_CLICKS);
 		bmd(LEFT_MOTOR);
 	} else if (direction == LEFT) {
-		//printf ("test turning left");
 		mrp(RIGHT_MOTOR, SPEED_FWD, RIGHT_ANGLE_CLICKS) ;
 		bmd(RIGHT_MOTOR);
 	} else {
@@ -244,13 +226,11 @@ void rightAngleFwd(int direction) {
 }
 void rightAngleBwd(int direction) {
 	reset_counters();
-
+//right angle backwards
 	if (direction == LEFT) {
-		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_BWD,RIGHT_ANGLE_CLICKS_BACK);
 		bmd(LEFT_MOTOR);
 	} else if (direction == RIGHT) {
-		//printf ("test turning left");
 		mrp(RIGHT_MOTOR, SPEED_BWD, RIGHT_ANGLE_CLICKS_BACK) ;
 		bmd(RIGHT_MOTOR);
 	} else {
@@ -262,12 +242,11 @@ void rightAngleBwd(int direction) {
 
 }
 void fortyFiveAngleFwd(int direction) {
+	//fortyfive degree forward turn
 	if (direction == RIGHT) {
-		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_FWD,FV_ANGLE_CLICKS);
 		bmd(LEFT_MOTOR);
 	} else if (direction == LEFT) {
-		//printf ("test turning left");
 		mrp(RIGHT_MOTOR, SPEED_FWD, FV_ANGLE_CLICKS) ;
 		bmd(RIGHT_MOTOR);
 	} else {
@@ -279,12 +258,11 @@ void fortyFiveAngleFwd(int direction) {
 	
 }
 void fortyFiveAngleBwd(int direction) {
+	//forty five degree backwards turn
 	if (direction == LEFT) {
-		//printf("test turning right");
 		mrp(LEFT_MOTOR,SPEED_BWD,FV_ANGLE_CLICKS_BACK);
 		bmd(LEFT_MOTOR);
 	} else if (direction == RIGHT) {
-		//printf ("test turning left");
 		mrp(RIGHT_MOTOR, SPEED_BWD, FV_ANGLE_CLICKS_BACK) ;
 		bmd(RIGHT_MOTOR);
 	} else {
@@ -297,19 +275,24 @@ void fortyFiveAngleBwd(int direction) {
 }
 
 void clawUp(){
+	//puts the claw up
 	set_servo_position(0,UP_SERVO);
 }
 	
 void clawDown(){
+	//puts the claw down
 	set_servo_position(0,DOWN_SERVO);
 }
 void clawUpCube(){
-    set_servo_position(0,UP_SERVO_CUBE);
+//moves the claw to the position we need for the claw 
+	set_servo_position(0,UP_SERVO_CUBE);
 }
 void clawDownCube(){
+	//moves the claw to the position we need for the claw
     set_servo_position(0,DOWN_SERVO_CUBE);
 }
 void reset_counters(){
+	//resets the motor counters
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
 }
