@@ -38,7 +38,7 @@ void reset_counters();
 int main()
 {
 	printf("test 3.00, fixed fowd and bwd function bugs.\n");
-	//wait_for_light(2);
+	//wait_for_light(0);
 	shut_down_in(115);
 	enable_servos();
 	clawUp();
