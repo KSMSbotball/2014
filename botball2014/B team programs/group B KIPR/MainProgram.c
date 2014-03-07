@@ -8,8 +8,8 @@
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1390
-#define RIGHT_ANGLE_CLICKS_BACK -1350
+#define RIGHT_ANGLE_CLICKS 1300
+#define RIGHT_ANGLE_CLICKS_BACK -1300
 #define FV_ANGLE_CLICKS 744
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1900
@@ -37,7 +37,7 @@ void clawUpCube();
 void reset_counters();
 int main()
 {
-	printf("test 3.02, fixed fowd and bwd function bugs.\n");
+	printf("test 3.03, fixed fowd and bwd function bugs.\n");
 	//wait_for_light(1);
 	shut_down_in(115);
 	enable_servos();
@@ -199,23 +199,26 @@ void moveBackward(double distanceInInches) {
 
 
 //right angle turn function
-void rightAngleFwdA(int direction ) {
+void rightAngleFwd(int direction ) {
+	
+	reset_counters();
+
 	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
-	reset_counters();
-	if (direction == RIGHT) {
-		while (current_position_right >= (initial_position_right)){
-		mav(LEFT_MOTOR,SPEED_FWD);
+	while ((current_position_right - initial_position_right + current_position_left - initial_position_left)<= RIGHT_ANGLE_CLICKS) {
+		if (direction == RIGHT) {
+			mav(LEFT_MOTOR,SPEED_FWD);
+		} else if (direction == LEFT) {
+		    mav(RIGHT_MOTOR, SPEED_FWD) ;
 		}
-	} else if (direction == LEFT) {
-		while (current_position_left >= (initial_position_left)){
-		mav(RIGHT_MOTOR, SPEED_FWD) ;
-		}
-	} else {
-		printf("ooopppsss I did not recognize your turn... so I ignored it");
-	}
+		msleep(25);
+		current_position_left = get_motor_position_counter(LEFT_MOTOR);
+		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+		printf("right angle fwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d\n", initial_position_left,current_position_left , initial_position_right,current_position_right );
+		
+	} 
 	//turn off motors completely
 	ao();
 	msleep(100);
@@ -223,8 +226,9 @@ void rightAngleFwdA(int direction ) {
 }
 
 
+
 //right angle turn function
-void rightAngleFwd(int direction) {
+void rightAngleFwdA(int direction) {
 	reset_counters();
 	if (direction == RIGHT) {
 		mrp(LEFT_MOTOR,SPEED_FWD,RIGHT_ANGLE_CLICKS);
@@ -240,7 +244,34 @@ void rightAngleFwd(int direction) {
 	msleep(100);
 
 }
-void rightAngleBwd(int direction) {
+
+//right angle turn function
+void rightAngleBwd(int direction ) {
+	
+	reset_counters();
+
+	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
+	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
+	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
+	while ((current_position_right - initial_position_right + current_position_left - initial_position_left)>= RIGHT_ANGLE_CLICKS_BACK) {
+		if (direction == RIGHT) {
+			mav(RIGHT_MOTOR,SPEED_BWD);
+		} else if (direction == LEFT) {
+		    mav(LEFT_MOTOR, SPEED_BWD) ;
+		}
+		msleep(25);
+		current_position_left = get_motor_position_counter(LEFT_MOTOR);
+		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
+		printf("right angle bwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d\n", initial_position_left,current_position_left , initial_position_right,current_position_right );
+		
+	} 
+	//turn off motors completely
+	ao();
+	msleep(100);
+
+}
+void rightAngleBwdA(int direction) {
 	reset_counters();
 //right angle backwards
 	printf("right angle back %d\n", RIGHT_ANGLE_CLICKS_BACK);
@@ -312,4 +343,5 @@ void reset_counters(){
 	//resets the motor counters
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
+	msleep(100);
 }
