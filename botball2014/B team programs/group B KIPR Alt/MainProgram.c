@@ -1,35 +1,33 @@
-// Created on Thu February 6 2014
-//quick and dirty program to see if mav API is more reliable than motor
-//to improve dead recknoning outcome.
 #define RIGHT_MOTOR 2
 #define LEFT_MOTOR 0
-#define SPEED_FWD 700
-#define SPEED_BWD -700
+#define SPEED_FWD 800
+#define SPEED_BWD -800
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS 1300
-#define RIGHT_ANGLE_CLICKS_BACK -1300
+#define RIGHT_ANGLE_CLICKS_LEFT 1330
+#define RIGHT_ANGLE_CLICKS_RIGHT 1470
+#define RIGHT_ANGLE_CLICKS_BACK -1250
 #define FV_ANGLE_CLICKS 744
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1900
-#define DOWN_SERVO 1015
+#define DOWN_SERVO 1063
 #define UP_SERVO_CUBE 1900
 #define DOWN_SERVO_CUBE 1398
 #define LIGHT_SENSOR 0
 #define CHECK_LIGHT_SENSOR 101
 #define NO_CHECK_LIGHT_SENSOR 197
-
+#define DEBUG 10
+#define NO_DEBUG 12
 //declaration
-void moveForward(double distanceInInches); 
-void moveForwardTilBlackLine(double distanceInInches); 	
-void moveBackward(double distanceInInces);
-void moveForwardRoutine(double distanceInInches, int checkLightSensor); 
-
-void rightAngleFwd(int direction);
-void rightAngleBwd(int direction);
-void fortyFiveAngleFwd(int direction);
-void fortyFiveAngleBwd(int direction);
+void moveForward(double distanceInInches, int debug); 
+void moveForwardTilBlackLine(double distanceInInches, int debug);
+void moveBackward(double distanceInInces, int debug);
+void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug); 
+void rightAngleFwd(int direction, int debug);
+void rightAngleBwd(int direction, int debug);
+void fortyFiveAngleFwd(int direction, int debug);
+void fortyFiveAngleBwd(int direction, int debug);
 void clawUp();
 void clawDown();
 void clawDownCube();
@@ -43,94 +41,73 @@ int main()
 	shut_down_in(115);
 	enable_servos();
 	clawUp();
-	moveBackward(3);
+	reset_counters();
+	moveBackward(1, NO_DEBUG);
 	printf("==> moving forward 22 inches\n");
-
-	moveForward(22);
+	moveForward(22, NO_DEBUG);
 	clawDown();
 	printf("==> moving R bwds\n");
-
 	//we have the Poms
-	rightAngleBwd(LEFT);
-	msleep(100);
+	rightAngleBwd(LEFT, NO_DEBUG);
 	//bump against the upper storage area
 	printf("==> moving backward 20 inches\n");
-	moveBackward(20);
-	msleep(100);
+	moveBackward(15, NO_DEBUG);
 	printf("==> moving forward 20 inches\n");
-	moveForward(20);
+	moveForward(20, DEBUG);
 	printf("==> moving righ angle bwd\n");
-	rightAngleBwd(LEFT);
+	rightAngleBwd(LEFT, NO_DEBUG);
 	//bump against upper PVC side
 	printf("==> moving backward 25 inches\n");
-	moveBackward(25);
+	moveBackward(23, NO_DEBUG);
 	//move towards dropping poms
-
-
 	printf("==> moving forward 3 inches\n");
-
-	moveForward(3);
+	moveForward(3, NO_DEBUG);
 	printf("==> moving righ angle bwd\n");
-	rightAngleFwd(LEFT);
+	rightAngleFwd(LEFT, DEBUG);
 	clawUp();
-
 	printf("==> moving forward 14 inches til black line\n");
-
-	moveForwardTilBlackLine(15);
+	moveForwardTilBlackLine(15, NO_DEBUG);
+	//milestone 2
+	moveBackward(13, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
+	moveBackward(8, NO_DEBUG);
+	moveForward(8.5, NO_DEBUG);
+	rightAngleFwd(RIGHT, NO_DEBUG);
+	moveForward(42, NO_DEBUG);
 	
-	printf("====> elapsed time: %f\n", (seconds() - start_time));
-	/*fortyFiveAngleFwd(RIGHT);
-	moveForward(13.5);
-	fortyFiveAngleFwd(RIGHT);
-	moveForward(1.5);
-	clawUp();*/
-
-	/*Milestone 2
-	moveForward(6);
-	//Milestone 2
-	moveBackward(11);
-	reset_counters();
-	rightAngleBwd(RIGHT);
-	moveBackward(10);
-	moveForward(9);
-	reset_counters();
-	rightAngleFwd(RIGHT);
-	moveForward(22);
 	clawDownCube();
-	reset_counters();
-	fortyFiveAngleFwd(LEFT);
-	moveForward(20);
-	//printf("program finished, POMS should be in...\n");
-	*/
+	rightAngleBwd(LEFT, NO_DEBUG);
+	moveBackward(10, NO_DEBUG);
+	moveForward(30,NO_DEBUG);
+	//rightAngleFwd(LEFT, NO_DEBUG);
+	//moveForward(20, NO_DEBUG);
+	printf("====> elapsed time: %f\n", (seconds() - start_time));
 	ao();
 	disable_servos();
-
 	return 0;
 }
 
-void moveForward(double distanceInInches) {	
-	moveForwardRoutine(distanceInInches, NO_CHECK_LIGHT_SENSOR);
+
+void moveForward(double distanceInInches, int debug) {	
+	moveForwardRoutine(distanceInInches, NO_CHECK_LIGHT_SENSOR, debug);
 }
 
 
 //moves forward without light sensor
-
-void moveForwardTilBlackLine(double distanceInInches) {
-	moveForwardRoutine(distanceInInches, CHECK_LIGHT_SENSOR);
+void moveForwardTilBlackLine(double distanceInInches, int debug) {
+	moveForwardRoutine(distanceInInches, CHECK_LIGHT_SENSOR, debug);
 }
 
 //moves forward with light sensor
-void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
+void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug) {
 	//checkLightSensor  do not check light sensor: see #define values
 	//                  do check light sensor and stop when it is over black or void
-
 	reset_counters();
 
 	//convert inches to clicks
 	int clicks =(int) (156.25l * distanceInInches);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
-
 	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	int differential  = 0 ;
@@ -141,13 +118,17 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
 
 		//let's get out if the sensor is on
 		if (checkLightSensor == CHECK_LIGHT_SENSOR && analog(LIGHT_SENSOR) > 512) 			{
-			printf("exiting because of light sensor");
+			if (debug == DEBUG) {
+				printf("exiting because of light sensor");
+			}
 			break;
 		}
 		//first let's see if one motor is going ahead of the other
 		differential = current_position_left - initial_position_left - 
 				(current_position_right - initial_position_right);
-			printf("sensor value: %d lightsensor %d \n", analog(LIGHT_SENSOR),checkLightSensor);
+			if (debug == DEBUG) {
+				printf("sensor value: %d lightsensor %d \n", analog(LIGHT_SENSOR),checkLightSensor);
+			}
 		if (differential > -25 && differential < 25 ) {
 		//counter are around the same 
 			mav(RIGHT_MOTOR, SPEED_FWD);
@@ -157,24 +138,30 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor) {
 		//right has moved ahead, let's slow down right until left catches up
 			mav(RIGHT_MOTOR,(int) (SPEED_FWD*ADJUST_SPEED));
 			mav(LEFT_MOTOR, SPEED_FWD);
-			printf("adjusting LEFT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			if (debug == DEBUG) {
+				printf("adjusting LEFT L: %d R: %d\n", (current_position_left - 				initial_position_left), (current_position_right - initial_position_right));
+			}
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
 			mav(RIGHT_MOTOR, SPEED_FWD);
 			mav(LEFT_MOTOR, (int) (SPEED_FWD*ADJUST_SPEED));
-			printf("adjusting RIGHT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			if (debug == DEBUG) {
+				printf("adjusting RIGHT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			}
 		}
 		msleep(25);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	ao();
-	msleep(250);
+	msleep(150);
 }
 
 
-void moveBackward(double distanceInInches) {
+void moveBackward(double distanceInInches,int debug) {
 	reset_counters();
 	//convert inches to clicks
 	int clicks =(int) (156.25l * distanceInInches);
@@ -205,36 +192,49 @@ void moveBackward(double distanceInInches) {
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	ao();
-	msleep(250);
+	msleep(150);
 
 }
 
 
 //right angle turn function
-void rightAngleFwd(int direction ) {
+void rightAngleFwd(int direction , int debug) {
 
+	
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	reset_counters();
-
-	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
-	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
-	while ((current_position_right - initial_position_right + current_position_left - initial_position_left)<= RIGHT_ANGLE_CLICKS) {
-		if (direction == RIGHT) {
-			mav(LEFT_MOTOR,SPEED_FWD);
-		} else if (direction == LEFT) {
-		    mav(RIGHT_MOTOR, SPEED_FWD) ;
-		}
+	int movement = 0;
+	if (direction == RIGHT) {
+		mav(LEFT_MOTOR,SPEED_FWD);
+	} else if (direction == LEFT) {
+	    mav(RIGHT_MOTOR, SPEED_FWD) ;
+	}
+
+	while (movement <= RIGHT_ANGLE_CLICKS_RIGHT && direction == RIGHT ||
+			movement <= RIGHT_ANGLE_CLICKS_LEFT && direction == LEFT ) {
 		msleep(25);
-		current_position_left = get_motor_position_counter(LEFT_MOTOR);
-		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
-		printf("right angle fwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d\n", initial_position_left,current_position_left , initial_position_right,current_position_right );
+		//calculate total movement since the beginning of the function
+		if (direction == LEFT) {
+			movement = get_motor_position_counter(RIGHT_MOTOR) - initial_position_right;
+		}  else {
+			movement = get_motor_position_counter(LEFT_MOTOR) - initial_position_left;
+		}
+		if (debug == DEBUG) {
+			printf("right angle fwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d movement %d\n", initial_position_left,get_motor_position_counter(LEFT_MOTOR) , initial_position_right,get_motor_position_counter(RIGHT_MOTOR), movement );
+		}
 
 	} 
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	ao();
-	msleep(250);
+	msleep(150);
 
 }
 
@@ -242,9 +242,11 @@ void rightAngleFwd(int direction ) {
 
 
 //right angle turn function
-void rightAngleBwd(int direction ) {
+void rightAngleBwd(int direction , int debug) {
 
 	reset_counters();
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 
 	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
@@ -259,17 +261,21 @@ void rightAngleBwd(int direction ) {
 		msleep(25);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
-		printf("right angle bwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d\n", initial_position_left,current_position_left , initial_position_right,current_position_right );
+		if (debug == DEBUG) {
+			printf("right angle bwd L Init , curr, R Init, curr : LI %d LC %d RI %d RC %d\n", initial_position_left,current_position_left , initial_position_right,current_position_right );
+		}
 
 	} 
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);	
 	ao();
-	msleep(250);
+	msleep(150);
 
 }
 
 
-void fortyFiveAngleFwd(int direction) {
+void fortyFiveAngleFwd(int direction, int debug) {
 	//fortyfive degree forward turn
 	if (direction == RIGHT) {
 		mrp(LEFT_MOTOR,SPEED_FWD,FV_ANGLE_CLICKS);
@@ -278,14 +284,17 @@ void fortyFiveAngleFwd(int direction) {
 		mrp(RIGHT_MOTOR, SPEED_FWD, FV_ANGLE_CLICKS) ;
 		bmd(RIGHT_MOTOR);
 	} else {
+		
 		printf("ooopppsss I did not recognize your turn... so I ignored it");
 	}
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	ao();
 	msleep(100);
 
 }
-void fortyFiveAngleBwd(int direction) {
+void fortyFiveAngleBwd(int direction, int debug) {
 	//forty five degree backwards turn
 	if (direction == LEFT) {
 		mrp(LEFT_MOTOR,SPEED_BWD,FV_ANGLE_CLICKS_BACK);
@@ -297,6 +306,8 @@ void fortyFiveAngleBwd(int direction) {
 		printf("ooopppsss I did not recognize your turn... so I ignored it");
 	}
 	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
 	ao();
 	msleep(100);
 
@@ -321,8 +332,12 @@ void clawDownCube(){
 }
 void reset_counters(){
 	//resets the motor counters
-	msleep(250);
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
+	msleep(200);
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
-	msleep(250);
+	
+
+	msleep(100);
 }
