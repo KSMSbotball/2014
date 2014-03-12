@@ -10,8 +10,8 @@
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS_MRP 1300
-#define RIGHT_ANGLE_CLICKS_BACK_MRP -1300
+#define RIGHT_ANGLE_CLICKS_MRP 1400
+#define RIGHT_ANGLE_CLICKS_BACK_MRP -1400
 #define RIGHT_ANGLE_CLICKS_LEFT 1330
 #define RIGHT_ANGLE_CLICKS_RIGHT 1470
 #define RIGHT_ANGLE_CLICKS_BACK -1250
@@ -61,14 +61,14 @@ int main()
 	clawDown();
 	printf("==> moving R bwds\n");
 	//we have the Poms
-	rightAngleBwd(LEFT, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against the upper storage area
 	printf("==> moving backward 20 inches\n");
 	moveBackward(15, NO_DEBUG);
 	printf("==> moving forward 20 inches\n");
 	moveForward(20, NO_DEBUG);
 	printf("==> moving righ angle bwd\n");
-	rightAngleBwd(LEFT, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against upper PVC side
 	printf("==> moving backward 25 inches\n");
 	moveBackward(23, NO_DEBUG);
@@ -82,14 +82,14 @@ int main()
 	moveForwardTilBlackLine(15, NO_DEBUG);
 	//milestone 2
 	moveBackward(13, NO_DEBUG);
-	rightAngleBwd(RIGHT, NO_DEBUG);
+	rightAngleBwd(LEFT, NO_DEBUG);
 	moveBackward(8, NO_DEBUG);
 	moveForward(8.5, NO_DEBUG);
 	rightAngleFwd(RIGHT, NO_DEBUG);
 	moveForward(42, NO_DEBUG);
 	
 	clawDownCube();
-	rightAngleBwd(LEFT, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
 	moveBackward(10, NO_DEBUG);
 	moveForward(30,NO_DEBUG);
 	//rightAngleFwd(LEFT, NO_DEBUG);
