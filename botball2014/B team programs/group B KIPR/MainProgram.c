@@ -10,17 +10,17 @@
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS_MRP 1400
-#define RIGHT_ANGLE_CLICKS_BACK_MRP -1400
+#define RIGHT_ANGLE_CLICKS_MRP 1450
+#define RIGHT_ANGLE_CLICKS_BACK_MRP -1450
 #define RIGHT_ANGLE_CLICKS_LEFT 1330
 #define RIGHT_ANGLE_CLICKS_RIGHT 1470
 #define RIGHT_ANGLE_CLICKS_BACK -1250
 #define FV_ANGLE_CLICKS 744
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1900
-#define DOWN_SERVO 1063
+#define DOWN_SERVO 975
 #define UP_SERVO_CUBE 1900
-#define DOWN_SERVO_CUBE 1398
+#define DOWN_SERVO_CUBE 1350
 #define LIGHT_SENSOR 0
 #define CHECK_LIGHT_SENSOR 101
 #define NO_CHECK_LIGHT_SENSOR 197
@@ -46,14 +46,13 @@ void clawUpCube();
 void reset_motors();
 int main()
 {
-	printf("test 1.00, message to the programer, this is the right program you need to debug it.\n");
+	printf("test 1.00, message to the programer, :)this is the right program you need to debug it.\n");
 	double start_time = seconds();
 	//wait_for_light(1);
 	shut_down_in(115);
 	enable_servos();
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
-	
 	clawUp();
 	moveBackward(1, NO_DEBUG);
 	printf("==> moving forward 22 inches\n");
@@ -90,10 +89,8 @@ int main()
 	
 	clawDownCube();
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	moveBackward(10, NO_DEBUG);
+	moveBackward(15, NO_DEBUG);
 	moveForward(30,NO_DEBUG);
-	//rightAngleFwd(LEFT, NO_DEBUG);
-	//moveForward(20, NO_DEBUG);
 	printf("====> elapsed time: %f\n", (seconds() - start_time));
 	ao();
 	disable_servos();
@@ -497,7 +494,11 @@ void rightAngleBwd(int direction , int debug) {
 	mav(LEFT_MOTOR,0);	
 	ao();
 	msleep(150);
-
+	
+		mav(RIGHT_MOTOR, SPEED_FWD);
+		mav(LEFT_MOTOR, SPEED_FWD);
+		
+		reset_motors();
 }
 */
 
