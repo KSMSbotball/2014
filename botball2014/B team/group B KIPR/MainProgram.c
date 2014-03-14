@@ -29,7 +29,7 @@
 void moveForward(double distanceInInches, int debug); 
 void moveForwardTilBlackLine(double distanceInInches, int debug);
 void moveBackward(double distanceInInces, int debug);
-void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug); 
+void moveForwardRoutine(double distanceInInches,int checkLightSensor, int debug); 
 void rightAngleFwd(int direction, int debug);
 void rightAngleBwd(int direction, int debug);
 void rightAngleFwdMrp(int direction, int debug);
@@ -43,9 +43,11 @@ void clawDown();
 void clawDownCube();
 void clawUpCube();
 void reset_motors();
+
+
 int main()
 {
-	printf("test 1.00, message to the programer, :)this is the right program you need to debug it.\n");
+	printf("test 1.10, message to the programer, good job.\n");
 	double start_time = seconds();
 	//wait_for_light(1);
 	shut_down_in(115);
@@ -53,7 +55,7 @@ int main()
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
 	clawUp();
-	moveBackward(1, NO_DEBUG);
+	moveBackward(3, NO_DEBUG);
 	printf("==> moving forward 22 inches\n");
 	moveForward(22, NO_DEBUG);
 	clawDown();
@@ -69,7 +71,7 @@ int main()
 	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against upper PVC side
 	printf("==> moving backward 25 inches\n");
-	moveBackward(23, NO_DEBUG);
+	moveBackward(25, NO_DEBUG);
 	//move towards dropping poms
 	printf("==> moving forward 3 inches\n");
 	moveForward(3, NO_DEBUG);
@@ -81,16 +83,20 @@ int main()
 	//milestone 2
 	moveBackward(13, NO_DEBUG);
 	rightAngleBwd(LEFT, NO_DEBUG);
-	moveBackward(8, NO_DEBUG);
+	moveBackward(10, NO_DEBUG);
 	moveForward(8.5, NO_DEBUG);
 	//get the cube now
 	rightAngleFwd(RIGHT, NO_DEBUG);
 	moveForward(35, NO_DEBUG);
 	clawDownCube();
 	rightAngleFwd(LEFT, NO_DEBUG);
-	moveForward(1, NO_DEBUG);
+	msleep(250);
+	//moveForward(1, NO_DEBUG);
 	rightAngleFwd(RIGHT, NO_DEBUG);
-	moveForward(13,NO_DEBUG);
+	clawUp();
+	moveForward(20,NO_DEBUG);
+	clawDownCube();
+	moveBackward(5, NO_DEBUG);
 	rightAngleFwd(LEFT, NO_DEBUG);
 	moveForward(5, NO_DEBUG);
 	clawUp();
