@@ -43,8 +43,6 @@ void clawDown();
 void clawDownCube();
 void clawUpCube();
 void reset_motors();
-
-
 int main()
 {
 	printf("test 1.10, message to the programer, good job.\n");
@@ -103,7 +101,7 @@ int main()
 	//Dropping off the cube
 	moveBackward(1, NO_DEBUG);
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	moveBackward(3, NO_DEBUG);
+	moveBackward(5, NO_DEBUG);
 	moveForward(12, NO_DEBUG);
 	rightAngleFwd(LEFT, NO_DEBUG);
 	moveForward(5 ,NO_DEBUG);
