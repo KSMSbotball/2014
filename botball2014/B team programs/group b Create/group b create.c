@@ -10,11 +10,21 @@ int main()
 	
 	
 	create_disconnect();
-	
+	//what are you guys trying to do here?
 	if (A)=(1)
 	
 	else
-	while(!get_create_lbump() && !get_create_rbump());
+	//hey guys here is a "nicer way" more programer like to write teh same thing below
+	//while(!get_create_lbump() && !get_create_rbump());
+	//we could also create a function that does go forward until bumping against something
+	//KIPR program has a similar function forwardUntilBlackLine(int inches) which goes forward
+	//for either the number of inches or when it encounter the black or goes over 
+	//void 	(no infrared reflection)
+	while (get_create-lbump() == 0 && get_create_rbump() == 0) {
+		//sleep i.e do nothing
+		msleep(50);
+	}
+	// I now stop since I have bumped against something. 
 	create_stop();
 	
 	
