@@ -10,7 +10,9 @@
 #define CRUISING_SPEED_TURNS_LEFT 500*1.15
 
 #define CRUISING_SPEED_FWD 750
+#define CRUSING_SPEED_FWD_FAST 1000
 #define CRUISING_SPEED_BWD -750
+#define CRUISING_SPEED_BWD_FAST -1000
 #define CRUISING_SPEED_TURNS 600
 
 #define TICKS_PER_REVOLUTION_RIGHT 831
@@ -21,13 +23,14 @@
 #define CORRECTION_THRESHOLD 10
 #define CORRECTION_REDUCTION .90
 
-#define MSLEEP_VALUE 1000
+#define MSLEEP_VALUE 500
 
 #define FORWARD 0 //directions 
 #define RIGHT 1
 #define LEFT 2
 #define BACK 3
-
+#define FAST 1
+#define SLOW 0
 #define FWD 1
 
 #define TIME_OUT 15
@@ -36,12 +39,13 @@ void Right_Angle(int Direction, double timeLimit);
 void Stop_Movement();
 void Forty_Five_Degree_Angle(int Forward_Back, int Direction, double timeLimit);
 void Twenty_Two_Half_Degree_Angle(int Forward_Back, int Direction, double timeLimit);
-void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit);
+void Move_X_Millimeters(int Direction, float distMillimeters, int Speed, double timeLimit);
 void Twenty_Two_Half_Degree_AngleMAV(int Direction, double timeLimit);
 void Forty_Five_Degree_AngleMAV(int Direction, double timeLimit);
 void boost();
 void First_Poms();
 void Move_Blue_Cube();
+void Second_Poms();
 
 	
 int main()
@@ -50,20 +54,22 @@ int main()
 	shut_down_in(120);
 	Stop_Movement();
 	
+//	Second_Poms();
+	
 	First_Poms();
 	
 	//Calibrate prior to blue cube run
-	Move_X_Millimeters(BACK, 380, TIME_OUT);
+	Move_X_Millimeters(BACK, 650, FAST, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);	
 	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(BACK, 400, TIME_OUT);
+	Move_X_Millimeters(BACK, 300, FAST, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	//End Calibrate prior to blue cube
@@ -72,50 +78,40 @@ int main()
 	
 	//Calibrate prior to second poms
 	
-	Move_X_Millimeters(BACK, 180, TIME_OUT);
+	Move_X_Millimeters(BACK, 75, FAST, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
-	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
+	Forty_Five_Degree_Angle(BACK, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
-	msleep(MSLEEP_VALUE);
-	
-	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(BACK, 500, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 200, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	msleep(MSLEEP_VALUE);
-	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(BACK, 650, TIME_OUT);
-	Stop_Movement();
+	Forty_Five_Degree_Angle(BACK, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
 	Twenty_Two_Half_Degree_Angle(BACK, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(BACK, 500, FAST, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 150, FAST, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(BACK, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(BACK, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(BACK, 300, FAST, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	//Go Get Poms2
 
-	Move_X_Millimeters(BACK, 100, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Twenty_Two_Half_Degree_Angle(BACK, LEFT, TIME_OUT);
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(BACK, 700, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	Second_Poms();
 	
 	return 0;
 }
@@ -130,33 +126,32 @@ void Stop_Movement(){
 
 void First_Poms(){
 	
-	Move_X_Millimeters(BACK, 10, TIME_OUT);
+	Move_X_Millimeters(BACK, 10, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 640, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 640, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 80, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);	
 	
 	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 80, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
-
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 100, TIME_OUT); //Into the bucket
+	Move_X_Millimeters(FORWARD, 100, SLOW, TIME_OUT); //Into the bucket
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
@@ -164,41 +159,99 @@ void First_Poms(){
 
 void Move_Blue_Cube() {
 	
-	Move_X_Millimeters(FORWARD, 200, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 200, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 750, TIME_OUT);//straight run for blue thing
+	Move_X_Millimeters(FORWARD, 400, SLOW, TIME_OUT);//straight run for blue thing
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 180, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 		
 	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 180, SLOW, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(FORWARD, 700, TIME_OUT); //cube on tape
+	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 300, SLOW, TIME_OUT); //cube on tape
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 }
 
-void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){ 
+void Second_Poms() {
+	
+	Move_X_Millimeters(FORWARD, 300, SLOW, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 250, SLOW, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 1600, SLOW, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	//Recalibrate
+	Move_X_Millimeters(BACK, 100, FAST, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(BACK, LEFT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(BACK, 250, FAST, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+//End Recalibrate
+	
+	
+	Move_X_Millimeters(FORWARD, 20, SLOW, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, LEFT, TIME_OUT);
+	msleep(250);
+	
+	Forty_Five_Degree_Angle(FWD, LEFT, TIME_OUT);
+	msleep(250);
+	
+	Move_X_Millimeters(FORWARD, 330, SLOW, TIME_OUT);//straight run for blue thing
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	
+	
+}
+
+void Move_X_Millimeters(int Direction, float distMillimeters, int SetSpeed, double timeLimit){ 
 	
 	float rightClicksStraight = TICKS_PER_REVOLUTION_RIGHT*(distMillimeters/MILLIMETERS_PER_REVOLUTION);
 	float leftClicksStraight = TICKS_PER_REVOLUTION_LEFT*(distMillimeters/MILLIMETERS_PER_REVOLUTION);
@@ -206,7 +259,16 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){
 	clear_motor_position_counter(LEFT_PORT_WHEEL);
 	clear_motor_position_counter(RIGHT_PORT_WHEEL);
 	
+
+		
 	if(Direction==FORWARD){
+			//Set Speed
+		int Speed = 0;
+		if(SetSpeed == FAST)
+			Speed = CRUSING_SPEED_FWD_FAST;
+		else
+			Speed = CRUISING_SPEED_FWD;
+	
 		//printf("CRUISING_SPEED_FWD_LEFT is: %f:\n", CRUISING_SPEED_FWD_LEFT);
 		double ticksDistance = TICKS_PER_REVOLUTION * (distMillimeters/MILLIMETERS_PER_REVOLUTION);
 		
@@ -227,20 +289,18 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){
 			int wheel_difference = mvt_counter_right - mvt_counter_left;
 			
 			if(wheel_difference < CORRECTION_THRESHOLD && wheel_difference > -CORRECTION_THRESHOLD){//If both are within the same range, wheels are going straight
-				mav(LEFT_PORT_WHEEL, CRUISING_SPEED_FWD);
-				mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_FWD);
+				mav(LEFT_PORT_WHEEL, Speed);
+				mav(RIGHT_PORT_WHEEL, Speed);
 				msleep(5);
 				printf("STRAIGHT: left: %d right: %d diff: %d\n", mvt_counter_left, mvt_counter_right, wheel_difference);
 			}
 			else if(mvt_counter_right > mvt_counter_left){//right wheel is ahead of left wheel
-				//mav(LEFT_PORT_WHEEL, 750);
-				mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_FWD * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
+				mav(RIGHT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
 				printf("RIGHT diff: %d\n", wheel_difference);
 				msleep(5);
 			}
 			else if(mvt_counter_left > mvt_counter_right){//left wheel is ahead of right wheel
-				mav(LEFT_PORT_WHEEL, CRUISING_SPEED_FWD * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
-				//mav(RIGHT_PORT_WHEEL, 750);
+				mav(LEFT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
 				printf("LEFT diff: %d\n", wheel_difference);
 				msleep(5);
 			}
@@ -249,6 +309,13 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){
 		ao();
 	}
 	if(Direction==BACK){
+		//Set Speed
+		int Speed = 0;
+		if(SetSpeed == FAST)
+			Speed = CRUISING_SPEED_BWD_FAST;
+		else
+			Speed = CRUISING_SPEED_BWD;
+		
 		double ticksDistance = -TICKS_PER_REVOLUTION * (distMillimeters/MILLIMETERS_PER_REVOLUTION);
 		
 		clear_motor_position_counter(RIGHT_PORT_WHEEL);
@@ -261,7 +328,7 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){
 		while((get_motor_position_counter(LEFT_PORT_WHEEL) > (motor_left_position_start + ticksDistance))
 			&& (seconds() - startBACKTime <= timeLimit)){
 			
-			printf("BACK\n");	
+			//printf("BACK\n");	
 				
 			int mvt_counter_left = get_motor_position_counter(LEFT_PORT_WHEEL)-motor_left_position_start;
 			int mvt_counter_right = get_motor_position_counter(RIGHT_PORT_WHEEL)-motor_right_position_start;
@@ -269,117 +336,25 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){
 			int wheel_difference = mvt_counter_right - mvt_counter_left;
 			
 			if(wheel_difference < CORRECTION_THRESHOLD && wheel_difference > -CORRECTION_THRESHOLD){//If both are within the same range, wheels are going straight
-				mav(LEFT_PORT_WHEEL, CRUISING_SPEED_BWD);
-				mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_BWD);
+				mav(LEFT_PORT_WHEEL, Speed);
+				mav(RIGHT_PORT_WHEEL, Speed);
 				msleep(5);
-				printf("left: %d right: %d diff: %d\n", mvt_counter_left, mvt_counter_right, wheel_difference);
+				//printf("left: %d right: %d diff: %d\n", mvt_counter_left, mvt_counter_right, wheel_difference);
 			}
 			else if(mvt_counter_right > mvt_counter_left){ //right wheel is ahead of left
-				//mav(LEFT_PORT_WHEEL, 750);
-				mav(LEFT_PORT_WHEEL, CRUISING_SPEED_BWD * CORRECTION_REDUCTION); //correction speed is 80% of BWD Speed
-				printf("correcting right diff: %d\n", wheel_difference);
+				mav(LEFT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speed is 80% of BWD Speed
+				//printf("correcting right diff: %d\n", wheel_difference);
 				msleep(35);
 			}
 			else if(mvt_counter_left > mvt_counter_right){// left wheel is ahead of right
-				mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_BWD * CORRECTION_REDUCTION); //correction speed is 80% of BWD Speed
-				//mav(RIGHT_PORT_WHEEL, 750);
-				printf("correcting left diff: %d\n", wheel_difference);
+				mav(RIGHT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speed is 80% of BWD Speed
+				//printf("correcting left diff: %d\n", wheel_difference);
 				msleep(35);
 			}
 			msleep(15);
 		}	
 		ao();
 	}
-}
-
-void Twenty_Two_Half_Degree_AngleMAV(int Direction, double timeLimit){
-	long rightClicksRight=0.09*TICKS_PER_REVOLUTION_RIGHT;
-	long leftClicksRight=0.09*TICKS_PER_REVOLUTION_LEFT;
-	
-	clear_motor_position_counter(LEFT_PORT_WHEEL);
-	clear_motor_position_counter(RIGHT_PORT_WHEEL);
-	
-	if(Direction==RIGHT){
-		double startTURN22Time = seconds();
-		while((seconds() - startTURN22Time <= timeLimit) && ((get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(RIGHT_PORT_WHEEL) > -rightClicksRight))){
-			
-			mav(RIGHT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
-			mav(LEFT_PORT_WHEEL, CRUISING_SPEED_TURNS);
-			msleep(100);
-		
-		}
-	}
-	else if(Direction==LEFT){
-		double startTURN22Time = seconds();
-		while((seconds() - startTURN22Time <= timeLimit) && ((get_motor_position_counter(RIGHT_PORT_WHEEL) < rightClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight))){
-			
-			mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_TURNS);
-			mav(LEFT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
-			msleep(100);
-		
-		}
-	}
-	else{
-		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
-	}
-}
-
-void Forty_Five_Degree_AngleMAV(int Direction, double timeLimit){
-	long rightClicksRight=0.35*TICKS_PER_REVOLUTION_RIGHT; //39
-	long leftClicksRight=0.35*TICKS_PER_REVOLUTION_LEFT;
-		
-	clear_motor_position_counter(LEFT_PORT_WHEEL);
-	clear_motor_position_counter(RIGHT_PORT_WHEEL);
-	
-	if(Direction==RIGHT){
-		double startTURN45Time = seconds();
-		while((seconds() - startTURN45Time <= timeLimit) && ((get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(RIGHT_PORT_WHEEL) > -rightClicksRight))){
-			
-			mav(RIGHT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
-			mav(LEFT_PORT_WHEEL, CRUISING_SPEED_TURNS);
-			msleep(35);
-		
-		}
-	}
-	else if(Direction==LEFT){
-		double startTURN45Time = seconds();
-		while((seconds() - startTURN45Time <= timeLimit) && ((get_motor_position_counter(RIGHT_PORT_WHEEL) < rightClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight))){
-			
-			mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_TURNS);
-			mav(LEFT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
-			msleep(35);
-		
-		}
-	}
-	else{
-		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
-	}
-}
-void Right_AngleMAV(int Direction, double timeLimit){
-	long rightClicksRight=0.6*TICKS_PER_REVOLUTION_RIGHT;
-	long leftClicksRight=0.6*TICKS_PER_REVOLUTION_LEFT;
-	
-	clear_motor_position_counter(LEFT_PORT_WHEEL);
-	clear_motor_position_counter(RIGHT_PORT_WHEEL);
-
-	double startTURN90Time = seconds();
-	while((seconds() - startTURN90Time <= timeLimit) && (get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight)){	
-	if(Direction==RIGHT){
-		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, -rightClicksRight);
-		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, leftClicksRight);
-		bmd(RIGHT_PORT_WHEEL);
-		bmd(LEFT_PORT_WHEEL);
-	}
-	else if(Direction==LEFT){
-		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, rightClicksRight);
-		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, -leftClicksRight);
-		bmd(RIGHT_PORT_WHEEL);
-		bmd(LEFT_PORT_WHEEL);
-	}
-	else{
-		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
-	}
-	}//Close While
 }
 
 void Twenty_Two_Half_Degree_Angle(int Forward_Back, int Direction, double timeLimit){
@@ -395,29 +370,22 @@ void Twenty_Two_Half_Degree_Angle(int Forward_Back, int Direction, double timeLi
 	clear_motor_position_counter(RIGHT_PORT_WHEEL);
 	
 	double startTURN22Time = seconds();
-	/*while((seconds() - startTURN22Time <= timeLimit) && ((get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight))){*/
 	if(Direction==RIGHT){
-		
-		//mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, -rightClicksRight);
 		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, leftClicksRight);
-		//bmd(RIGHT_PORT_WHEEL);
 		bmd(LEFT_PORT_WHEEL);
 	}
 	else if(Direction==LEFT){
 		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, rightClicksRight);
-		//mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, -leftClicksRight);
 		bmd(RIGHT_PORT_WHEEL);
-		//bmd(LEFT_PORT_WHEEL);
 	}
 	else{
 		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
 	}
-	//}//Close while
 }
 
 void Forty_Five_Degree_Angle(int Forward_Back, int Direction, double timeLimit){
 	long rightClicksRight=0.91*TICKS_PER_REVOLUTION_RIGHT;
-	long leftClicksRight=0.89*TICKS_PER_REVOLUTION_LEFT;
+	long leftClicksRight=0.85*TICKS_PER_REVOLUTION_LEFT;
 	
 	if (Forward_Back == BACK){
 		rightClicksRight = -rightClicksRight;
@@ -428,55 +396,15 @@ void Forty_Five_Degree_Angle(int Forward_Back, int Direction, double timeLimit){
 	clear_motor_position_counter(RIGHT_PORT_WHEEL);
 	
 	double startTURN45Time = seconds();
-	//while((seconds() - startTURN45Time <= timeLimit) && (get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight)){
 	if(Direction==RIGHT){
-		//mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, -rightClicksRight);
 		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, leftClicksRight);
-		//bmd(RIGHT_PORT_WHEEL);
 		bmd(LEFT_PORT_WHEEL);
 	}
 	else if(Direction==LEFT){
 		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, rightClicksRight);
-		//mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, -leftClicksRight);
 		bmd(RIGHT_PORT_WHEEL);
-		//bmd(LEFT_PORT_WHEEL);
 	}
 	else{
 		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
 	}
-	//}//Close While
 }
-
-
-void boost(){
-	mav(RIGHT_PORT_WHEEL, 2000);
-	mav(LEFT_PORT_WHEEL, 2000);
-	msleep(1000);
-}
-
-
-/*
-=======================Old Code========================
-/*
-	printf("Goes forward, makes turns, collects/pushes poms.\n");
-	Move_X_Millimeters(FORWARD, 17);
-	Stop_Movement();
-	msleep(1000);
-	/*
-	Complete_90_Degree_Angle(RIGHT, PreviousTicks1);
-	Stop_Movement();
-	msleep(1000);
-	Right_Angle(RIGHT);
-	Stop_Movement();
-	msleep(1000);
-	long PreviousTicks2 = Move_X_Millimeters(FORWARD, 13);
-	Stop_Movement();
-	msleep(1000);
-	Complete_90_Degree_Angle(RIGHT, PreviousTicks2);
-	Stop_Movement();
-	msleep(1000);
-	Right_Angle(LEFT);/*
-	Move_X_Millimeters(BACK, 12);
-	Right_Angle(RIGHT);
-	Move_X_Millimeters(FORWARD, 9);*/
-

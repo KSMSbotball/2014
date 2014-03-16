@@ -181,3 +181,98 @@ void Right_Angle(int Direction, double timeLimit){
 	}
 	//}//Close While
 }
+
+void Twenty_Two_Half_Degree_AngleMAV(int Direction, double timeLimit){
+	long rightClicksRight=0.09*TICKS_PER_REVOLUTION_RIGHT;
+	long leftClicksRight=0.09*TICKS_PER_REVOLUTION_LEFT;
+	
+	clear_motor_position_counter(LEFT_PORT_WHEEL);
+	clear_motor_position_counter(RIGHT_PORT_WHEEL);
+	
+	if(Direction==RIGHT){
+		double startTURN22Time = seconds();
+		while((seconds() - startTURN22Time <= timeLimit) && ((get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(RIGHT_PORT_WHEEL) > -rightClicksRight))){
+			
+			mav(RIGHT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
+			mav(LEFT_PORT_WHEEL, CRUISING_SPEED_TURNS);
+			msleep(100);
+		
+		}
+	}
+	else if(Direction==LEFT){
+		double startTURN22Time = seconds();
+		while((seconds() - startTURN22Time <= timeLimit) && ((get_motor_position_counter(RIGHT_PORT_WHEEL) < rightClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight))){
+			
+			mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_TURNS);
+			mav(LEFT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
+			msleep(100);
+		
+		}
+	}
+	else{
+		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
+	}
+}
+
+void Forty_Five_Degree_AngleMAV(int Direction, double timeLimit){
+	long rightClicksRight=0.35*TICKS_PER_REVOLUTION_RIGHT; //39
+	long leftClicksRight=0.35*TICKS_PER_REVOLUTION_LEFT;
+		
+	clear_motor_position_counter(LEFT_PORT_WHEEL);
+	clear_motor_position_counter(RIGHT_PORT_WHEEL);
+	
+	if(Direction==RIGHT){
+		double startTURN45Time = seconds();
+		while((seconds() - startTURN45Time <= timeLimit) && ((get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(RIGHT_PORT_WHEEL) > -rightClicksRight))){
+			
+			mav(RIGHT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
+			mav(LEFT_PORT_WHEEL, CRUISING_SPEED_TURNS);
+			msleep(35);
+		
+		}
+	}
+	else if(Direction==LEFT){
+		double startTURN45Time = seconds();
+		while((seconds() - startTURN45Time <= timeLimit) && ((get_motor_position_counter(RIGHT_PORT_WHEEL) < rightClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight))){
+			
+			mav(RIGHT_PORT_WHEEL, CRUISING_SPEED_TURNS);
+			mav(LEFT_PORT_WHEEL, -CRUISING_SPEED_TURNS);
+			msleep(35);
+		
+		}
+	}
+	else{
+		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
+	}
+}
+void Right_AngleMAV(int Direction, double timeLimit){
+	long rightClicksRight=0.6*TICKS_PER_REVOLUTION_RIGHT;
+	long leftClicksRight=0.6*TICKS_PER_REVOLUTION_LEFT;
+	
+	clear_motor_position_counter(LEFT_PORT_WHEEL);
+	clear_motor_position_counter(RIGHT_PORT_WHEEL);
+
+	double startTURN90Time = seconds();
+	while((seconds() - startTURN90Time <= timeLimit) && (get_motor_position_counter(LEFT_PORT_WHEEL) < leftClicksRight) && (get_motor_position_counter(LEFT_PORT_WHEEL) > -leftClicksRight)){	
+	if(Direction==RIGHT){
+		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, -rightClicksRight);
+		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, leftClicksRight);
+		bmd(RIGHT_PORT_WHEEL);
+		bmd(LEFT_PORT_WHEEL);
+	}
+	else if(Direction==LEFT){
+		mrp(RIGHT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_RIGHT, rightClicksRight);
+		mrp(LEFT_PORT_WHEEL, (int)CRUISING_SPEED_TURNS_LEFT, -leftClicksRight);
+		bmd(RIGHT_PORT_WHEEL);
+		bmd(LEFT_PORT_WHEEL);
+	}
+	else{
+		printf("Invalid input. LEFT and RIGHT globals accepted only\n");
+	}
+	}//Close While
+}
+void boost(){
+	mav(RIGHT_PORT_WHEEL, 2000);
+	mav(LEFT_PORT_WHEEL, 2000);
+	msleep(1000);
+}
