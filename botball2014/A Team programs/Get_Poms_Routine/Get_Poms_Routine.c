@@ -40,104 +40,37 @@ void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit);
 void Twenty_Two_Half_Degree_AngleMAV(int Direction, double timeLimit);
 void Forty_Five_Degree_AngleMAV(int Direction, double timeLimit);
 void boost();
+void First_Poms();
+void Move_Blue_Cube();
 
 	
 int main()
 {	
 	//wait_for_light(1);
 	shut_down_in(120);
-	
 	Stop_Movement();
 	
-	Move_X_Millimeters(BACK, 10, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	First_Poms();
 	
-	Move_X_Millimeters(FORWARD, 640, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);	
-	
-	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 100, TIME_OUT); //Into the bucket
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
+	//Calibrate prior to blue cube run
 	Move_X_Millimeters(BACK, 380, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);	
 	
 	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
 	Move_X_Millimeters(BACK, 400, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
-
-	Move_X_Millimeters(FORWARD, 200, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	//End Calibrate prior to blue cube
 	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	Move_Blue_Cube();
 	
-	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 750, TIME_OUT);//straight run for blue thing
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-		
-	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	
-	/*
-	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
-	//Stop_Movement();
-	msleep(MSLEEP_VALUE);
-	*/
-	
-	Move_X_Millimeters(FORWARD, 700, TIME_OUT); //cube on tape
-	Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	//Calibrate prior to second poms
 	
 	Move_X_Millimeters(BACK, 180, TIME_OUT);
 	Stop_Movement();
@@ -193,6 +126,76 @@ void Stop_Movement(){
 	mav(RIGHT_PORT_WHEEL, 0);
 	mav(LEFT_PORT_WHEEL, 0);
 	//ao();
+}
+
+void First_Poms(){
+	
+	Move_X_Millimeters(BACK, 10, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 640, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);	
+	
+	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 80, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Twenty_Two_Half_Degree_Angle(FWD, RIGHT, TIME_OUT);
+
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 100, TIME_OUT); //Into the bucket
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+}
+
+void Move_Blue_Cube() {
+	
+	Move_X_Millimeters(FORWARD, 200, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	//Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Forty_Five_Degree_Angle(FWD, RIGHT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 750, TIME_OUT);//straight run for blue thing
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+		
+	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 180, TIME_OUT);
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
+	
+	Move_X_Millimeters(FORWARD, 700, TIME_OUT); //cube on tape
+	Stop_Movement();
+	msleep(MSLEEP_VALUE);
 }
 
 void Move_X_Millimeters(int Direction, float distMillimeters, double timeLimit){ 
