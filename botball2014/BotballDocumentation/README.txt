@@ -1,1 +1,0 @@
-﻿The purpose of this folder is to host the artifacts required for Botball. There is a series of documents that need to be provided to the botball organizer. This folder should contain the most up to date version of these documents.

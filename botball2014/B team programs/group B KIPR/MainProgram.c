@@ -8,18 +8,19 @@
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1450
-#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1470
+#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1467
+#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1460
 #define RIGHT_ANGLE_CLICKS_BACK_MRP -1450
 #define RIGHT_ANGLE_CLICKS_LEFT 1330
 #define RIGHT_ANGLE_CLICKS_RIGHT 1500
 #define RIGHT_ANGLE_CLICKS_BACK -1250
-#define FV_ANGLE_CLICKS 744
+#define FV_ANGLE_CLICKS 727
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1900
-#define DOWN_SERVO 1000
+#define DOWN_SERVO 1050
 #define UP_SERVO_CUBE 1900
-#define DOWN_SERVO_CUBE 1370
+#define ALMOST_DOWN_SERVO_CUBE 1480
+#define DOWN_SERVO_CUBE 1420
 #define LIGHT_SENSOR 0
 #define CHECK_LIGHT_SENSOR 101
 #define NO_CHECK_LIGHT_SENSOR 197
@@ -37,87 +38,213 @@ void rightAngleBwdMrp(int direction, int debug);
 void rightAngleFwdMav(int direction, int debug);
 void rightAngleBwdMav(int direction, int debug);
 void fortyFiveAngleFwd(int direction, int debug);
-void fortyFiveAngleBwd(int direction, int debug);
 void clawUp();
 void clawDown();
 void clawDownCube();
+void clawAlmostDownCube();
 void clawUpCube();
 void reset_motors();
 int main()
 {
-	printf("test 1.10, message to the programer, good job.\n");
+	/* FIRST CALIBRATION: based on poms position adjust starting position
+	*/
+	
+	printf("test 2.00, test last part of the routine.\n");
 	double start_time = seconds();
 	//wait_for_light(1);
 	shut_down_in(115);
 	enable_servos();
+	/*
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
+	msleep(300);
 	clawUp();
-	moveBackward(3, NO_DEBUG);
+	//**************************************
+	//* PART 1 : get first set of poms to lower storage area
+	//*
+	//**************************************
+	moveBackward(1, NO_DEBUG);
 	printf("==> moving forward 22 inches\n");
 	moveForward(22, NO_DEBUG);
 	clawDown();
-	printf("==> moving R bwds\n");
 	//we have the Poms
 	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against the upper storage area
 	printf("==> moving backward 20 inches\n");
-	moveBackward(15, NO_DEBUG);
+	moveBackward(17, NO_DEBUG);
 	printf("==> moving forward 20 inches\n");
+	clawUp();
 	moveForward(20, NO_DEBUG);
+	clawDown();
 	printf("==> moving righ angle bwd\n");
 	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against upper PVC side
 	printf("==> moving backward 25 inches\n");
-	moveBackward(25, NO_DEBUG);
+	moveBackward(23, NO_DEBUG);
 	//move towards dropping poms
 	printf("==> moving forward 3 inches\n");
-	moveForward(3, NO_DEBUG);
+	clawUp();
+	moveForward(2, NO_DEBUG);
+	msleep(300);
 	printf("==> moving righ angle bwd\n");
 	rightAngleFwd(LEFT, NO_DEBUG);
-	clawUp();
+	msleep(300);
 	printf("==> moving forward 14 inches til black line\n");
+	
 	moveForwardTilBlackLine(15, NO_DEBUG);
-	//milestone 2
-	moveBackward(13, NO_DEBUG);
+	printf("====> elapsed time end of part 1: %f\n", (seconds() - start_time));
+
+	//**************************************
+	//* END OF PART 1 : get first set of poms to lower storage area
+	//*
+	//**************************************
+
+	//**************************************
+	//* PART 2 : get the blue cube in the corner
+	//*
+	//**************************************
+	moveBackward(24, NO_DEBUG);
 	rightAngleBwd(LEFT, NO_DEBUG);
 	moveBackward(10, NO_DEBUG);
-	moveForward(8.5, NO_DEBUG);
-	//get the cube now
-	rightAngleFwd(RIGHT, NO_DEBUG);
-	moveForward(35, NO_DEBUG);
-	clawDownCube();
-	rightAngleFwd(LEFT, NO_DEBUG);
-	msleep(250);
-	//moveForward(1, NO_DEBUG);
-	rightAngleFwd(RIGHT, NO_DEBUG);
+	
+	*/
+	// SECOND CALIBRATION: based on blackline/blue position
+	
 	clawUp();
+	moveForward(8, NO_DEBUG);
+	
+	rightAngleFwd(RIGHT, NO_DEBUG);
+	//get the cube now
+
+	//====>>>>> may have to be adjust the day of competition based on position of 2nd
+	//====>>>>> set of poms
+	moveForward(16, NO_DEBUG);
+	//====>>>>>
+
+	clawAlmostDownCube();
+	fortyFiveAngleFwd(LEFT, NO_DEBUG);
+	clawUp();
+	//====>>>>> 
+	moveForward(14, NO_DEBUG);
+	//====>>>>>
+	clawAlmostDownCube();
+	fortyFiveAngleFwd(LEFT, NO_DEBUG);
+	clawUp();
+	
+	/* old routine with 45 deg left and 45 deg right
+	fortyFiveAngleFwd(RIGHT, NO_DEBUG);
+	//bump against PVC
+	clawUp();
+	//push cube against pvc
 	moveForward(20,NO_DEBUG);
 	clawDownCube();
-	moveBackward(5, NO_DEBUG);
-	rightAngleFwd(LEFT, NO_DEBUG);
-	moveForward(5, NO_DEBUG);
-	clawUp();
-	//Dropping off the cube
-	moveBackward(1, NO_DEBUG);
+
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	moveBackward(5, NO_DEBUG);
+	*/
+	moveForward(18, NO_DEBUG);
+	printf("====> elapsed time end of part 2: %f\n", (seconds() - start_time));
+
+	//**************************************
+	//* END OF PART 2 : get the blue cube in the corner
+	//*
+	//**************************************
+
+	//**************************************
+	//* PART 3 : prepare to get second set of poms
+	//*
+	//**************************************
+	moveBackward(2, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
+	
+	//calibrating with side PVC
+	moveBackward(10, NO_DEBUG);
+		
+	moveForward(4, NO_DEBUG);
+	rightAngleBwd(LEFT,NO_DEBUG);
+	//calibrating with top PVC
+	moveBackward(20,NO_DEBUG);
+	
+	// THIRD CALIBRATION: based on second set of Poms
+	//below is the number of inches from the side PVC
+	//
 	moveForward(12, NO_DEBUG);
-	rightAngleFwd(LEFT, NO_DEBUG);
-	moveForward(5 ,NO_DEBUG);
+	rightAngleBwd(RIGHT, DEBUG);
+	//recalibrate with side pvc
+	moveBackward(8,NO_DEBUG);
+	printf("====> elapsed time end of part 3: %f\n", (seconds() - start_time));
+
+	//**************************************
+	//* END OF PART 3 : prepare to get second set of poms
+	//*
+	//**************************************
+	
+	//**************************************
+	//* PART 4 : bring second set of poms home
+	//*
+	//**************************************
+	
+	moveForward(79,NO_DEBUG);
 	clawDown();
+	
+	/* if we need an additional calibration against top pvc 
+	//here is teh code
+	//recalibrate against top PVC
+	rightAngleBwd(LEFT,NO_DEBUG);
+	
+	moveBackward(15, NO_DEBUG);
+	//move towards dropping poms
+	clawUp();
+	moveForward(2, NO_DEBUG);
+	msleep(300);
+	printf("==> moving righ angle bwd\n");
+	rightAngleFwd(LEFT, NO_DEBUG);
+	//recalibrate against top PVC
+	moveForward(xx,NO_DEBUG);
+	*/
+
+	rightAngleBwd(LEFT,NO_DEBUG);
+	moveBackward(15, NO_DEBUG);
+	//move towards dropping poms
+	clawUp();
+	moveForward(2, NO_DEBUG);
+	msleep(300);
+	printf("==> moving righ angle bwd\n");
+	rightAngleFwd(LEFT, NO_DEBUG);
+	msleep(300);
+	printf("==> moving forward 14 inches til black line\n");
+	
+	moveForwardTilBlackLine(15, NO_DEBUG);
+
+	//**************************************
+	//* END OF PART 4 : bring second set of poms home
+	//*
+	//**************************************
+
 	printf("====> elapsed time: %f\n", (seconds() - start_time));
 	ao();
 	disable_servos();
 	return 0;
 }
+
+
+
+//****************************
+//*  function bodies below
+//*
+//*****************************
+
+
+
 void moveForward(double distanceInInches, int debug) {	
 	moveForwardRoutine(distanceInInches, NO_CHECK_LIGHT_SENSOR, debug);
 }
+
 //moves forward without light sensor
 void moveForwardTilBlackLine(double distanceInInches, int debug) {
 	moveForwardRoutine(distanceInInches, CHECK_LIGHT_SENSOR, debug);
 }
+
+
 //moves forward with light sensor
 void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug) {
 	//checkLightSensor	do not check light sensor: see #define values
@@ -257,15 +384,19 @@ void rightAngleFwdMrp(int direction, int debug ) {
 	if (direction == RIGHT) {
 		mrp(LEFT_MOTOR, SPEED_FWD, RIGHT_ANGLE_CLICKS_MRP_RIGHT);
 		bmd(LEFT_MOTOR);
+		if (debug == DEBUG) {
+			printf("right angle mrp fwd RIGHT Init %d , curr %d, tgt %d\n", initial_position,current_position, RIGHT_ANGLE_CLICKS_MRP_RIGHT);
+		}
 		current_position = get_motor_position_counter(LEFT_MOTOR);
 	} else if (direction == LEFT) {
 		mrp(RIGHT_MOTOR, SPEED_FWD, RIGHT_ANGLE_CLICKS_MRP_LEFT);
 		bmd(RIGHT_MOTOR);
+		if (debug == DEBUG) {
+			printf("right angle mrp fwd LEFT Init %d , curr %d, tgt %d\n", initial_position,current_position, RIGHT_ANGLE_CLICKS_MRP_LEFT);
+		}
 		current_position = get_motor_position_counter(RIGHT_MOTOR);
 	}
-		if (debug == DEBUG) {
-			printf("right angle mrp fwd Init %d , curr %d, tgt %d\n", initial_position,current_position, RIGHT_ANGLE_CLICKS_MRP_RIGHT);
-	}
+		
 	mav(RIGHT_MOTOR, 0);
 	mav(LEFT_MOTOR, 0);
 	reset_motors();
@@ -336,15 +467,18 @@ void rightAngleBwdMrp(int direction, int debug ) {
 	}
 	mav(RIGHT_MOTOR, 0);
 	mav(LEFT_MOTOR, 0);
-	reset_motors();
+	reset_motors(); 
+	
+	
 }
-void fortyFiveAngleBwd(int direction, int debug) {
+
+void fortyFiveAngleFwd(int direction, int debug) {
 	//forty five degree backwards turn
-	if (direction == LEFT) {
-		mrp(LEFT_MOTOR,SPEED_BWD,FV_ANGLE_CLICKS_BACK);
+	if (direction == RIGHT) {
+		mrp(LEFT_MOTOR,(SPEED_FWD/2),FV_ANGLE_CLICKS);
 		bmd(LEFT_MOTOR);
-	} else if (direction == RIGHT) {
-		mrp(RIGHT_MOTOR, SPEED_BWD, FV_ANGLE_CLICKS_BACK) ;
+	} else if (direction == LEFT) {
+		mrp(RIGHT_MOTOR, (SPEED_FWD/2), FV_ANGLE_CLICKS) ;
 		bmd(RIGHT_MOTOR);
 	} else {
 		printf("ooopppsss I did not recognize your turn... so I ignored it");
@@ -369,6 +503,10 @@ void clawUpCube(){
 void clawDownCube(){
 	//moves the claw to the position we need for the claw
     set_servo_position(0,DOWN_SERVO_CUBE);
+}
+void clawAlmostDownCube(){
+	//moves the claw to the position we need for the claw
+    set_servo_position(0,ALMOST_DOWN_SERVO_CUBE);
 }
 void reset_motors(){
 	//resets the motor counters
