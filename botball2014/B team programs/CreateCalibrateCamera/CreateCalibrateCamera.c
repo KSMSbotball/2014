@@ -1,5 +1,7 @@
 // Created on Thu March 13 2014
-
+//CreateCalibrateCamera: this program is designed to help with calibration 
+//before running the entire program. It will help adjust for minute variations.
+//
 //Cube position (x coordinate), change when calibrating channel if needed
 //see program camera calibration routine
 #define POS_7 6
@@ -64,10 +66,8 @@ int main()
 void calibrateCamera() {
 	int channel = 0;
 	while (a_button_clicked() == 0) {
-
-		camera_update();
 		msleep(2000);
-
+		camera_update();
 		printf ("=> object count %d \n", get_object_count(channel));
 		int i = 0; 
 		int shelfPlaces[8] = {0,0,0,0,0,0,0,0};

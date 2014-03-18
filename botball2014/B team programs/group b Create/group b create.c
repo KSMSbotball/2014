@@ -1,5 +1,6 @@
 // Created on Thu March 13 2014
-
+//CGroup b Create program:  this program is what should be run at the competition
+//
 //Cube position (x coordinate), change when calibrating channel if needed
 //see program camera calibration routine
 #define POS_7 6
