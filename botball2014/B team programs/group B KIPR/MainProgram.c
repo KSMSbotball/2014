@@ -1,5 +1,15 @@
 #define IR_SENSOR 0
-#define IR_SENSOR_THRESHOLD 800
+#define IR_SENSOR_THRESHOLD 500
+
+#define DOWN_SERVO 1018
+#define UP_SERVO 1900
+#define UP_SERVO_CUBE 1900
+#define ALMOST_DOWN_SERVO_CUBE 1480
+
+#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1450
+#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1450
+#define RIGHT_ANGLE_CLICKS_BACK_MRP -1450
+
 
 #define MRP 0
 #define MAV 1
@@ -12,19 +22,12 @@
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1460
-#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1450
-#define RIGHT_ANGLE_CLICKS_BACK_MRP -1450
 #define RIGHT_ANGLE_CLICKS_LEFT 1330
 #define RIGHT_ANGLE_CLICKS_RIGHT 1500
 #define RIGHT_ANGLE_CLICKS_BACK -1250
 #define FV_ANGLE_CLICKS 727
 #define TT_ANGLE_CLICKS 364
 #define FV_ANGLE_CLICKS_BACK -744
-#define UP_SERVO 1900
-#define DOWN_SERVO 1000
-#define UP_SERVO_CUBE 1900
-#define ALMOST_DOWN_SERVO_CUBE 1480
 #define DOWN_SERVO_CUBE 1420
 
 #define CHECK_IR_SENSOR 101
@@ -63,7 +66,7 @@ int main()
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
 	msleep(300);
-	wait_for_light(1);
+	//wait_for_light(1);
 	shut_down_in(115);	
 	clawUp();
 	//**************************************
@@ -148,16 +151,16 @@ int main()
 	//**************************************
 	//recalibrate against side PVC
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	moveBackwardHighSpeed(20, NO_DEBUG);		
+	moveBackwardHighSpeed(23, NO_DEBUG);		
 	moveForward(5, NO_DEBUG);
 	//calibrating with top PVC
 	rightAngleBwd(LEFT,NO_DEBUG);
-	moveBackwardHighSpeed(20,NO_DEBUG);
+	moveBackwardHighSpeed(23,NO_DEBUG);
 	// THIRD CALIBRATION: based on second set of Poms
 	//below is the number of inches from the side PVC
 	//
-	moveForward(12, NO_DEBUG);
-	rightAngleBwd(RIGHT, DEBUG);
+	moveForward(14, NO_DEBUG);
+	rightAngleBwd(RIGHT, NO_DEBUG);
 	//recalibrate with side pvc
 	moveBackwardHighSpeed(4,NO_DEBUG);
 	printf("====> elapsed time end of part 3: %f\n", (seconds() - start_time));
@@ -174,25 +177,25 @@ int main()
 	//grabs the poms, bring down claw and go home
 	moveForward(12.5,NO_DEBUG);
 	clawDown();
-	moveForward(62.5, NO_DEBUG);
-	/*//here is the code to recalibrate one more time... but do we have enough time?
+	moveForward(23.5, NO_DEBUG);
+	//here is the code to recalibrate one more time... but do we have enough time?
 	//recalibrate against top PVC
 	rightAngleBwd(LEFT,NO_DEBUG);
 	
 	moveBackward(10, NO_DEBUG);
 	//move towards dropping poms
 	
-	moveForward(6, NO_DEBUG);
+	moveForward(10, NO_DEBUG);
 	msleep(500);
 	printf("==> moving righ angle bwd\n");
 	rightAngleFwd(LEFT, NO_DEBUG);
 	
 	//recalibrate against top PVC
-	moveForward(42.5,NO_DEBUG);
-	*/
+	moveForward(39,NO_DEBUG);
+	
 	//last calibration before dropping second set of poms
 	rightAngleBwd(LEFT,NO_DEBUG);
-	moveBackwardHighSpeed(10, NO_DEBUG);
+	moveBackwardHighSpeed(13, NO_DEBUG);
 	//move towards dropping poms
 	moveForward(2, NO_DEBUG);
 	msleep(300);

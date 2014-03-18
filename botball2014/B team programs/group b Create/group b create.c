@@ -11,8 +11,9 @@
 #define POS_2 147
 #define POS_1 170
 
-#define STANDRD_LENGTH 20
-#define CUBE_WIDTH 3.5
+#define STANDRD_LENGTH 6.5
+#define FORWARD_TO_CUBE 7.5
+#define CUBE_WIDTH 2
 
 #define CLAW_CLOSE 500
 #define CLAW_OPEN 920
@@ -24,8 +25,8 @@
 #define CLAW_CLOSING_INCREMENT -5
 #define FORWARD_CONSTANT 275
 #define BACKWARD_CONSTANT 250
-#define RIGHT_ANG_LEFT 1960
-#define RIGHT_ANG_RIGHT 1840
+#define RIGHT_ANG_LEFT 2000
+#define RIGHT_ANG_RIGHT 2000
 #define HALF_CIRCLE 3800
 #define SPEED_FWD 100
 #define SPEED_BWD -100
@@ -72,18 +73,21 @@ int main()
 	rightAngle(LEFT);
 	forward(20);
 	int positions[2] = {-1, -1};
-	determineCubePositions(positions, DEBUG);
+	//determineCubePositions(positions, DEBUG);
+	positions[0] = 2;
+	positions[1]  = 6;
 	printf("back from looking camera usage. elapsed time: %f s\n", (seconds() - startTime));
 	//start routine to go grab the cubes
 	if (positions[0] != -1) {
 		//position create at the standard starting position
 		goToBase();
 		goGrabCubeAtPosition(positions[0]);
-		dropCube(positions[0]);
+		/*dropCube(positions[0]);
 		printf("should have dropped cube 1, elapsed time: %f s.\n", (seconds() - startTime));
 		//create just dropped a cube and is back at the starting location ready for number 2
 		goGrabCubeAtPosition(positions[1]);
 		dropCube(positions[1]);
+		*/
 		printf("should have dropped cube 2, the end. elapsed time: %f s\n", (seconds() - startTime));
 	} else { 
 		printf("the camera did not get any hits... sorry bad run.\n");
@@ -176,9 +180,9 @@ void goGrabCubeAtPosition(int location) {
 	forward(STANDRD_LENGTH + location * CUBE_WIDTH);
 	rightAngle(RIGHT);
 	//go up to pick it up
-	forward(12);
+	//forward(FORWARD_TO_CUBE);
 	//we should now secure teh cube
-	clawClose(NO_DEBUG);
+	//clawClose(NO_DEBUG);
 		
 }
 
@@ -199,9 +203,9 @@ void dropCube(int fromLocation) {
 }
 //goes to position where bot is ready to go pick up square
 void goToBase() { 
-	backward(8);
+	backward(4);
 	rightAngle(LEFT);
-	backward(23);
+	backward(13);
 	pushSideToSide();
 }
 
