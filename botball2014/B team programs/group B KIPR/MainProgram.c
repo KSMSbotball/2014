@@ -1,3 +1,6 @@
+#define IR_SENSOR 0
+#define IR_SENSOR_THRESHOLD 800
+
 #define MRP 0
 #define MAV 1
 #define MRP_OR_MAV 0
@@ -5,31 +8,35 @@
 #define LEFT_MOTOR 0
 #define SPEED_FWD 800
 #define SPEED_BWD -800
+#define SPEED_BWD_HIGH -1200
 #define ADJUST_SPEED 0.70
 #define RIGHT 76
 #define LEFT 57
-#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1467
-#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1460
+#define RIGHT_ANGLE_CLICKS_MRP_LEFT 1460
+#define RIGHT_ANGLE_CLICKS_MRP_RIGHT 1450
 #define RIGHT_ANGLE_CLICKS_BACK_MRP -1450
 #define RIGHT_ANGLE_CLICKS_LEFT 1330
 #define RIGHT_ANGLE_CLICKS_RIGHT 1500
 #define RIGHT_ANGLE_CLICKS_BACK -1250
 #define FV_ANGLE_CLICKS 727
+#define TT_ANGLE_CLICKS 364
 #define FV_ANGLE_CLICKS_BACK -744
 #define UP_SERVO 1900
-#define DOWN_SERVO 1050
+#define DOWN_SERVO 1000
 #define UP_SERVO_CUBE 1900
 #define ALMOST_DOWN_SERVO_CUBE 1480
 #define DOWN_SERVO_CUBE 1420
-#define LIGHT_SENSOR 0
-#define CHECK_LIGHT_SENSOR 101
-#define NO_CHECK_LIGHT_SENSOR 197
+
+#define CHECK_IR_SENSOR 101
+#define NO_CHECK_IR_SENSOR 197
 #define DEBUG 10
 #define NO_DEBUG 12
 //declaration
 void moveForward(double distanceInInches, int debug); 
 void moveForwardTilBlackLine(double distanceInInches, int debug);
 void moveBackward(double distanceInInces, int debug);
+void moveBackwardRoutine(double distanceInInces, int speed, int debug);
+void moveBackwardHighSpeed(double distanceInInces, int debug);	
 void moveForwardRoutine(double distanceInInches,int checkLightSensor, int debug); 
 void rightAngleFwd(int direction, int debug);
 void rightAngleBwd(int direction, int debug);
@@ -38,6 +45,7 @@ void rightAngleBwdMrp(int direction, int debug);
 void rightAngleFwdMav(int direction, int debug);
 void rightAngleBwdMav(int direction, int debug);
 void fortyFiveAngleFwd(int direction, int debug);
+void twentyTwoAngleFwd(int direction, int debug);
 void clawUp();
 void clawDown();
 void clawDownCube();
@@ -49,48 +57,39 @@ int main()
 	/* FIRST CALIBRATION: based on poms position adjust starting position
 	*/
 	
-	printf("test 2.00, test last part of the routine.\n");
+	printf("test 2.03, test last part of the routine.waiting for light...\n");
 	double start_time = seconds();
-	//wait_for_light(1);
-	shut_down_in(115);
 	enable_servos();
-	/*
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
 	msleep(300);
+	wait_for_light(1);
+	shut_down_in(115);	
 	clawUp();
 	//**************************************
 	//* PART 1 : get first set of poms to lower storage area
 	//*
 	//**************************************
 	moveBackward(1, NO_DEBUG);
-	printf("==> moving forward 22 inches\n");
-	moveForward(22, NO_DEBUG);
+	moveForward(15, NO_DEBUG);
 	clawDown();
+	moveForward(5,NO_DEBUG);
 	//we have the Poms
 	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against the upper storage area
-	printf("==> moving backward 20 inches\n");
-	moveBackward(17, NO_DEBUG);
-	printf("==> moving forward 20 inches\n");
-	clawUp();
-	moveForward(20, NO_DEBUG);
-	clawDown();
-	printf("==> moving righ angle bwd\n");
+	moveBackwardHighSpeed(17, NO_DEBUG);
+	moveForward(17, NO_DEBUG);
+	
 	rightAngleBwd(RIGHT, NO_DEBUG);
 	//bump against upper PVC side
-	printf("==> moving backward 25 inches\n");
-	moveBackward(23, NO_DEBUG);
+	moveBackwardHighSpeed(23, NO_DEBUG);
 	//move towards dropping poms
-	printf("==> moving forward 3 inches\n");
-	clawUp();
 	moveForward(2, NO_DEBUG);
 	msleep(300);
-	printf("==> moving righ angle bwd\n");
 	rightAngleFwd(LEFT, NO_DEBUG);
 	msleep(300);
-	printf("==> moving forward 14 inches til black line\n");
-	
+	clawUp();
+	//uses IR sensor to stop the forward movement
 	moveForwardTilBlackLine(15, NO_DEBUG);
 	printf("====> elapsed time end of part 1: %f\n", (seconds() - start_time));
 
@@ -100,14 +99,14 @@ int main()
 	//**************************************
 
 	//**************************************
-	//* PART 2 : get the blue cube in the corner
+	//* PART 2 : get the blue cube to the corner
 	//*
 	//**************************************
 	moveBackward(24, NO_DEBUG);
+	//recalibrate against top PVC next to botguy
 	rightAngleBwd(LEFT, NO_DEBUG);
-	moveBackward(10, NO_DEBUG);
-	
-	*/
+	moveBackwardHighSpeed(7, NO_DEBUG);
+		
 	// SECOND CALIBRATION: based on blackline/blue position
 	
 	clawUp();
@@ -118,32 +117,26 @@ int main()
 
 	//====>>>>> may have to be adjust the day of competition based on position of 2nd
 	//====>>>>> set of poms
-	moveForward(16, NO_DEBUG);
+	moveForward(22, NO_DEBUG);
 	//====>>>>>
 
 	clawAlmostDownCube();
-	fortyFiveAngleFwd(LEFT, NO_DEBUG);
+	twentyTwoAngleFwd(LEFT, NO_DEBUG);
+	clawUp();
+	//====>>>>> calibration to get to the corner 22.5 fwd, 22.5 more forward, aiming at bottom left hand corner
+	moveForward(10, NO_DEBUG);
+	clawAlmostDownCube();
+	twentyTwoAngleFwd(LEFT, NO_DEBUG);
+	moveForward(14, NO_DEBUG);
+
 	clawUp();
 	//====>>>>> 
-	moveForward(14, NO_DEBUG);
+	moveForward(4, NO_DEBUG);
+	moveBackward(8,NO_DEBUG);
 	//====>>>>>
-	clawAlmostDownCube();
 	fortyFiveAngleFwd(LEFT, NO_DEBUG);
-	clawUp();
 	
-	/* old routine with 45 deg left and 45 deg right
-	fortyFiveAngleFwd(RIGHT, NO_DEBUG);
-	//bump against PVC
-	clawUp();
-	//push cube against pvc
-	moveForward(20,NO_DEBUG);
-	clawDownCube();
-
-	rightAngleBwd(RIGHT, NO_DEBUG);
-	*/
-	moveForward(18, NO_DEBUG);
 	printf("====> elapsed time end of part 2: %f\n", (seconds() - start_time));
-
 	//**************************************
 	//* END OF PART 2 : get the blue cube in the corner
 	//*
@@ -153,24 +146,20 @@ int main()
 	//* PART 3 : prepare to get second set of poms
 	//*
 	//**************************************
-	moveBackward(2, NO_DEBUG);
+	//recalibrate against side PVC
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	
-	//calibrating with side PVC
-	moveBackward(10, NO_DEBUG);
-		
-	moveForward(4, NO_DEBUG);
-	rightAngleBwd(LEFT,NO_DEBUG);
+	moveBackwardHighSpeed(20, NO_DEBUG);		
+	moveForward(5, NO_DEBUG);
 	//calibrating with top PVC
-	moveBackward(20,NO_DEBUG);
-	
+	rightAngleBwd(LEFT,NO_DEBUG);
+	moveBackwardHighSpeed(20,NO_DEBUG);
 	// THIRD CALIBRATION: based on second set of Poms
 	//below is the number of inches from the side PVC
 	//
 	moveForward(12, NO_DEBUG);
 	rightAngleBwd(RIGHT, DEBUG);
 	//recalibrate with side pvc
-	moveBackward(8,NO_DEBUG);
+	moveBackwardHighSpeed(4,NO_DEBUG);
 	printf("====> elapsed time end of part 3: %f\n", (seconds() - start_time));
 
 	//**************************************
@@ -182,38 +171,35 @@ int main()
 	//* PART 4 : bring second set of poms home
 	//*
 	//**************************************
-	
-	moveForward(79,NO_DEBUG);
+	//grabs the poms, bring down claw and go home
+	moveForward(12.5,NO_DEBUG);
 	clawDown();
-	
-	/* if we need an additional calibration against top pvc 
-	//here is teh code
+	moveForward(62.5, NO_DEBUG);
+	/*//here is the code to recalibrate one more time... but do we have enough time?
 	//recalibrate against top PVC
 	rightAngleBwd(LEFT,NO_DEBUG);
 	
-	moveBackward(15, NO_DEBUG);
+	moveBackward(10, NO_DEBUG);
 	//move towards dropping poms
-	clawUp();
-	moveForward(2, NO_DEBUG);
-	msleep(300);
+	
+	moveForward(6, NO_DEBUG);
+	msleep(500);
 	printf("==> moving righ angle bwd\n");
 	rightAngleFwd(LEFT, NO_DEBUG);
+	
 	//recalibrate against top PVC
-	moveForward(xx,NO_DEBUG);
+	moveForward(42.5,NO_DEBUG);
 	*/
-
+	//last calibration before dropping second set of poms
 	rightAngleBwd(LEFT,NO_DEBUG);
-	moveBackward(15, NO_DEBUG);
+	moveBackwardHighSpeed(10, NO_DEBUG);
 	//move towards dropping poms
-	clawUp();
 	moveForward(2, NO_DEBUG);
 	msleep(300);
-	printf("==> moving righ angle bwd\n");
 	rightAngleFwd(LEFT, NO_DEBUG);
 	msleep(300);
-	printf("==> moving forward 14 inches til black line\n");
-	
-	moveForwardTilBlackLine(15, NO_DEBUG);
+	clawUp();
+	moveForwardTilBlackLine(15, DEBUG);
 
 	//**************************************
 	//* END OF PART 4 : bring second set of poms home
@@ -236,17 +222,17 @@ int main()
 
 
 void moveForward(double distanceInInches, int debug) {	
-	moveForwardRoutine(distanceInInches, NO_CHECK_LIGHT_SENSOR, debug);
+	moveForwardRoutine(distanceInInches, NO_CHECK_IR_SENSOR, debug);
 }
 
 //moves forward without light sensor
 void moveForwardTilBlackLine(double distanceInInches, int debug) {
-	moveForwardRoutine(distanceInInches, CHECK_LIGHT_SENSOR, debug);
+	moveForwardRoutine(distanceInInches, CHECK_IR_SENSOR, debug);
 }
 
 
 //moves forward with light sensor
-void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug) {
+void moveForwardRoutine(double distanceInInches, int checkIRSensor, int debug) {
 	//checkLightSensor	do not check light sensor: see #define values
 	//                do check light sensor and stop when it is over black or void
 	//convert inches to clicks
@@ -261,7 +247,7 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug
 	while (current_position_left <= (initial_position_left + clicks) ||
 		current_position_right <= (initial_position_right + clicks)   )	{
 		//let's get out if the sensor is on
-		if (checkLightSensor == CHECK_LIGHT_SENSOR && analog(LIGHT_SENSOR) > 512) 			{
+		if (checkIRSensor == CHECK_IR_SENSOR && analog(IR_SENSOR) > IR_SENSOR_THRESHOLD) 			{
 			if (debug == DEBUG) {
 				printf("exiting because of light sensor");
 			}
@@ -271,7 +257,7 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug
 		differential = current_position_left - initial_position_left - 
 				(current_position_right - initial_position_right);
 			if (debug == DEBUG) {
-				printf("sensor value: %d lightsensor %d \n", analog(LIGHT_SENSOR),checkLightSensor);
+				printf("sensor value: %d lightsensor %d \n", analog(IR_SENSOR),checkIRSensor);
 			}
 		if (differential > -25 && differential < 25 ) {
 		//counter are around the same 
@@ -304,6 +290,19 @@ void moveForwardRoutine(double distanceInInches, int checkLightSensor, int debug
 }
 void moveBackward(double distanceInInches,int debug) {
 	//convert inches to clicks
+
+	moveBackwardRoutine(distanceInInches, SPEED_BWD, debug);
+}
+
+void moveBackwardHighSpeed(double distanceInInches,int debug) {
+	//convert inches to clicks
+
+	moveBackwardRoutine(distanceInInches, SPEED_BWD_HIGH, debug);
+}
+
+
+void moveBackwardRoutine(double distanceInInches,int speed, int debug) {
+	//convert inches to clicks
 	int clicks =(int) (156.25l * distanceInInches);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
@@ -316,14 +315,14 @@ void moveBackward(double distanceInInches,int debug) {
 		differential = current_position_left - initial_position_left - 
 				(current_position_right - initial_position_right);
 		if (differential > -25 && differential < 25 ) {
-			mav(RIGHT_MOTOR, SPEED_BWD);
-			mav(LEFT_MOTOR, SPEED_BWD);
+			mav(RIGHT_MOTOR, speed);
+			mav(LEFT_MOTOR, speed);
 		} else if (differential > 0 ) {
-			mav(RIGHT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
-			mav(LEFT_MOTOR, SPEED_BWD);
+			mav(RIGHT_MOTOR, (int) (speed*ADJUST_SPEED));
+			mav(LEFT_MOTOR, speed);
 		} else {
-			mav(RIGHT_MOTOR, SPEED_BWD);
-			mav(LEFT_MOTOR, (int) (SPEED_BWD*ADJUST_SPEED));
+			mav(RIGHT_MOTOR, speed);
+			mav(LEFT_MOTOR, (int) (speed*ADJUST_SPEED));
 		}
 		msleep(25);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
@@ -488,6 +487,25 @@ void fortyFiveAngleFwd(int direction, int debug) {
 	mav(LEFT_MOTOR,0);
 	reset_motors();
 }
+
+void twentyTwoAngleFwd(int direction, int debug) {
+	//twenty two .5 degree backwards turn
+	if (direction == RIGHT) {
+		mrp(LEFT_MOTOR,(SPEED_FWD/3),TT_ANGLE_CLICKS);
+		bmd(LEFT_MOTOR);
+	} else if (direction == LEFT) {
+		mrp(RIGHT_MOTOR, (SPEED_FWD/3), TT_ANGLE_CLICKS) ;
+		bmd(RIGHT_MOTOR);
+	} else {
+		printf("ooopppsss I did not recognize your turn... so I ignored it");
+	}
+	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
+	reset_motors();
+}
+
+
 void clawUp(){
 	//puts the claw up
 	set_servo_position(0,UP_SERVO);

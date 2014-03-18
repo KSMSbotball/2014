@@ -1,6 +1,20 @@
 // Created on Thu March 13 2014
-#define CLAW_CLOSE 550
-#define CLAW_OPEN 1100
+
+//Cube position (x coordinate), change when calibrating channel if needed
+//see program camera calibration routine
+#define POS_7 6
+#define POS_6 20
+#define POS_5 55
+#define POS_4 90
+#define POS_3 122
+#define POS_2 147
+#define POS_1 170
+
+#define STANDRD_LENGTH 20
+#define CUBE_WIDTH 3.5
+
+#define CLAW_CLOSE 500
+#define CLAW_OPEN 920
 
 
 
@@ -9,12 +23,14 @@
 #define CLAW_CLOSING_INCREMENT -5
 #define FORWARD_CONSTANT 275
 #define BACKWARD_CONSTANT 250
+#define RIGHT_ANG_LEFT 1960
+#define RIGHT_ANG_RIGHT 1840
+#define HALF_CIRCLE 3800
 #define SPEED_FWD 100
 #define SPEED_BWD -100
 #define CHANNELS 1
 #define DEBUG 100
 #define NO_DEBUG 51
-#define A 0
 
 #define RIGHT 2
 #define LEFT 3
@@ -25,7 +41,14 @@ void clawCloseA(int debug);
 void forward(int inches);
 void backward(int inches);
 void rightAngle(int direction);
+void turnCreate(int time);
 void approachYellowCube(int debug);
+void dropCube(int fromLocation);
+void goToBase();
+void pushSideToSide();
+void determineCubePositions(int* positions, int debug);
+void goGrabCubeAtPosition(int position);
+int getShelfPlacement(int xLocation);
 
 
 
@@ -35,94 +58,174 @@ int main()
 	create_connect();
 	enable_servos();
 	camera_open(LOW_RES);
+//	wait_for_light(1);
+	shut_down_in(115);
 	printf("2.1 after initialization\n");
-
+	int startTime = seconds();
 	msleep(1500);	
-/*	msleep(5000);
+	msleep(5000);
 	printf("opening claw...\n");
 	clawOpen();
-	printf("opening claw...done \n");
-	msleep(2000);
-	printf("closing claw...\n");
-	clawClose(DEBUG);
-	printf("closing claw...done\n");
-	msleep(2000);
-	clawOpen();
-	msleep(2000);
-	clawClose(NO_DEBUG);
-*/	
-	printf("prgm starts 2..\n");
-	clawOpen(NO_DEBUG);
-	approachYellowCube(DEBUG);
-	clawClose(NO_DEBUG);
-/*	forward(10);
-	printf("i have moved 10 inc andd I am resting 3 s\n");
+	//place create for camera recognition of cube positions
+	forward(9);
 	rightAngle(LEFT);
-	forward (10);
-	rightAngle(RIGHT);
-	forward (10);
+	forward(20);
+	int positions[2] = {-1, -1};
+	determineCubePositions(positions, DEBUG);
+	printf("back from looking camera usage. elapsed time: %f s\n", (seconds() - startTime));
+	//start routine to go grab the cubes
+	if (positions[0] != -1) {
+		//position create at the standard starting position
+		goToBase();
+		goGrabCubeAtPosition(positions[0]);
+		dropCube(positions[0]);
+		printf("should have dropped cube 1, elapsed time: %f s.\n", (seconds() - startTime));
+		//create just dropped a cube and is back at the starting location ready for number 2
+		goGrabCubeAtPosition(positions[1]);
+		dropCube(positions[1]);
+		printf("should have dropped cube 2, the end. elapsed time: %f s\n", (seconds() - startTime));
+	} else { 
+		printf("the camera did not get any hits... sorry bad run.\n");
+		goToBase();
+	}
 	
-	rightAngle(LEFT);
-	backward (10);
-	rightAngle(RIGHT);
-	backward (19);
-	
-	printf("i have moved 15 inc andd I am resting 3 s\n");
-	msleep(3000);
-//	backward (24);
-	printf("the end...\n");
-*/	create_disconnect();
+	camera_close();
+	create_disconnect();
 	return 0;
 	
 	
 }
 
 //routine to move create towards yellow cube
-void approachYellowCube(int debug) {
+void determineCubePositions(int* positions,  int debug) {
+	msleep(2000);
+	int retries = 0;
+	int channel = 0;
+	int result = camera_update();
+	while (retries < 10 && get_object_count(channel) == 0) {
+		msleep(1000);
+		retries = retries + 1;
+		if (debug == DEBUG) {
+			printf ("camera not seeing cubes retry %d \n",retries);
+		}
+		result = camera_update();
+	}
+	if (retries >= 10) {
+		printf ("the camera couldn't see anything, bad run.\n");
+		return;
+	}
+	//one more update
+	msleep(2000); 
 	camera_update();
-	while (a_button_clicked() == 0 ) {
-		int i = 0 ; 
-		while (i < CHANNELS) {
+	if (debug == DEBUG) {		
+		printf ("====> for channel %d, object count %d \n", channel, get_object_count(channel));
+	}
+	//now let's compute the results of the camera 			
+	int i = 0; 
+	int shelfPlacesTtlArea[8] = {0,0,0,0,0,0,0,0};
+	while (i < get_object_count(channel)) {
+		int position = getShelfPlacement(get_object_center(channel, i).x);
+		if (debug == DEBUG) {
+			printf("obj %d, ctr loc, area, shelf plcmt: %d, %d, %d\n", i, get_object_center(channel, i).x, get_object_area(channel, i), position);
+		}
+		
+		shelfPlacesTtlArea[position] += get_object_area(channel, i);
+		i++;
+	}
+	i = 1;
+	int areas[2] = {0,0};
+	//let's select the 2 with the most areas
+	//look at all 7 shelfPlacement and the total area accumulated by each based on the routine above
+	//areas array of 2 will contain the top 2 and we start the area at 0 of course we also need to remember what
+	//shelf placement that was and this is kept in positions.
+	while (i < 8) {
+		if (shelfPlacesTtlArea[i] > areas[0]) {
+			//the current shelf placement examined has more surface than the greatest we have seen so we will
+			// slide the previous largest to the 2nd largest and store this one as the new largest area
+			areas[1] = areas[0];
+			positions[1] = positions[0];
+			areas[0] = shelfPlacesTtlArea[i];
+			positions[0] = i;
 			if (debug == DEBUG) {
-				printf("printing for %d\n", i);
-				printf("test %d\n", get_object_count(1));
-				
-				printf ("====> for channel %d, object count %d \n", i, get_object_count(i));
-				
-			}
-			int j = 0; 
-			int significantObject = -1;
-			int area = -1;
-			//get largest object
-			while ( j <= get_object_count(i) ) {
-				if (get_object_area(i,j) > area && get_object_area(i,j) > 130) {
-					area = get_object_area(i,j);
-					significantObject = j;
-				}
-				
-				j = j + 1;
-			}
-			if (significantObject != -1)  {
-				//we found something
-				printf("the object center is at x %d, y %d \n", get_object_center(i, significantObject).x, get_object_center(i, significantObject).y);
+				printf ("shelfPlace : %d, total cube area : %d is the largest on record.\n", i, shelfPlacesTtlArea[i]);
 			}
 
-			i = i+ 1; 
+		} else if (shelfPlacesTtlArea[i] > areas[1]) {
+			//the current shelf placement examined has more surface than the 2nd largest greatest we have seen so far, so we will
+			//store it at the 2nd largest and drop the other one since there are only 2 cubes		
+			areas[1] = shelfPlacesTtlArea[i];
+			positions[1] = i;
+			if (debug == DEBUG) {
+				printf ("shelfPlace : %d, total cube area : %d is the 2nd largest on record.\n", i, shelfPlacesTtlArea[i]);
+			}
 		}
-		if (debug == DEBUG) {
-			printf("push b button to update, a to exit"); 
-		}
-		while (b_button_clicked() == 0 && a_button_clicked() == 0) {
-			msleep(100);
-		}
-		camera_update();
-		
+		i++;
 	}
-	if (debug == DEBUG) {
-		printf ("all done camera routine...\n");
+	//since the camera can't see position 7 we will have to assume that if the camera only saw 1 cube the other one is at palcement 7
+	if (areas[1] < 100) {
+		positions[1] = 7;
 	}
+
 }
 
+//goes and picks up the cube based on the shelf location this is dead reckoning but create is very accurate
+void goGrabCubeAtPosition(int location) { 
+	//the claw should be opened but just in case
+	clawOpen();
+	forward(STANDRD_LENGTH + location * CUBE_WIDTH);
+	rightAngle(RIGHT);
+	//go up to pick it up
+	forward(12);
+	//we should now secure teh cube
+	clawClose(NO_DEBUG);
+		
+}
+
+//goes from picking up the cube to dropping it off in the upper storage area
+void dropCube(int fromLocation) { 
+	backward(8);
+	rightAngle(LEFT);
+	backward((STANDRD_LENGTH +  fromLocation * CUBE_WIDTH + 1) );
+	pushSideToSide();
+	forward(3);
+	
+	turnCreate(HALF_CIRCLE);
+	clawOpen();
+	turnCreate(HALF_CIRCLE);
+	backward(3);
+	pushSideToSide();
+		
+}
+//goes to position where bot is ready to go pick up square
+void goToBase() { 
+	backward(8);
+	rightAngle(LEFT);
+	backward(23);
+	pushSideToSide();
+}
+
+//return the shelf placement based on predefined values
+int getShelfPlacement(int xLocation) {
+	if (xLocation > (int) ((POS_1 + POS_2) /2) ) {
+		return 1; 
+	} 
+	if (xLocation > (int) ((POS_2 + POS_3) /2) ) {
+		return 2; 
+	} 
+	if (xLocation > (int) ((POS_3 + POS_4) /2) ) {
+		return 3; 
+	} 
+	if (xLocation > (int) ((POS_4 + POS_5) /2) ) {
+		return 4; 
+	} 
+	if (xLocation > (int) ((POS_5 + POS_6) /2) ) {
+		return 5; 
+	} 
+	if (xLocation > (int) ((POS_6 + POS_7) /2) ) {
+		return 6; 
+	} 
+	return 7;
+}
 //opening the claw gently from current position
 void clawOpen() {
 	int currentPosition = get_servo_position(CLAW_SERVO);
@@ -158,18 +261,33 @@ void rightAngle (int direction){
 	if (direction == RIGHT) { 
 		//then well turn 90 deg to the RIGHT
 		create_spin_CW(SPEED_FWD);
-		msleep(1900);
+		msleep(RIGHT_ANG_RIGHT);
 	} else if (direction == LEFT) {
 		//then well turn 90 deg to the LEFT
 		create_spin_CCW(SPEED_FWD);
-		msleep(1900);
+		msleep(RIGHT_ANG_LEFT);
 	} else {
 		printf("sorry I don't understand what you want me to do... ignoring right angle turn command\n");
 	}
 	create_stop();
 }
 
+//generic right angle turn in place
+void turnCreate (int time){
+	create_spin_CW(SPEED_FWD);
+	msleep(time);
+	create_stop();
+}
 
+//wiggle from side to side to get recalibrated againt PVC
+void pushSideToSide (){
+	create_drive_direct(SPEED_BWD,0);
+	msleep(1000);
+	create_stop();
+	create_drive_direct(0, SPEED_BWD);
+	msleep(1000);
+	create_stop();
+}
 
 //generic move forward function calibrated in inches
 void forward (int inches){
@@ -215,3 +333,4 @@ void clawCloseA(int debug) {
 
 	}
 }
+
