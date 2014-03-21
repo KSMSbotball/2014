@@ -31,7 +31,7 @@ int main()
 {	
 	int i = 0;
 	while (i<4){
-		Forty_Five_Degree_Angle(LEFT, TIME_OUT);
+		Forty_Five_Degree_Angle(RIGHT, TIME_OUT);
 		//Stop_Movement();
 		msleep(MSLEEP_VALUE);
 		i++;
@@ -70,8 +70,8 @@ void Twenty_Two_Half_Degree_Angle(int Direction, double timeLimit){
 }
 
 void Forty_Five_Degree_Angle(int Direction, double timeLimit){
-	long rightClicksRight=0.91*TICKS_PER_REVOLUTION_RIGHT;
-	long leftClicksRight=0.89*TICKS_PER_REVOLUTION_LEFT;
+	long rightClicksRight=0.84*TICKS_PER_REVOLUTION_RIGHT;
+	long leftClicksRight=0.835*TICKS_PER_REVOLUTION_LEFT;
 		
 	clear_motor_position_counter(LEFT_PORT_WHEEL);
 	clear_motor_position_counter(RIGHT_PORT_WHEEL);
