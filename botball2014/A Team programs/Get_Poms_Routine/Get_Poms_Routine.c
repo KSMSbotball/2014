@@ -271,7 +271,7 @@ void Second_Poms() {
 	Move_X_Millimeters(FORWARD, 600, SLOW, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
-	Move_X_Millimeters(BACK, 40, FAST, TIME_OUT);
+	Move_X_Millimeters(BACK, 30, FAST, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
 	
@@ -292,16 +292,17 @@ void Second_Poms() {
 	Forty_Five_Degree_Angle(FORWARD, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);*/
 	
-	Move_X_Millimeters(FORWARD, 320, FAST, TIME_OUT);
+	Move_X_Millimeters(FORWARD, 340, FAST, TIME_OUT);
 	Stop_Movement();
 	msleep(MSLEEP_VALUE);
+	/*
 	
 	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
 	msleep(MSLEEP_VALUE);
 	
 	Move_X_Millimeters(FORWARD, 10, SLOW, TIME_OUT);
 	Stop_Movement();
-	msleep(MSLEEP_VALUE);
+	msleep(MSLEEP_VALUE);*/
 	
 	/*
 	Twenty_Two_Half_Degree_Angle(FWD, LEFT, TIME_OUT);
@@ -346,7 +347,7 @@ void Move_X_Millimeters(int Direction, float distMillimeters, int SetSpeed, doub
 			int mvt_counter_left = get_motor_position_counter(LEFT_PORT_WHEEL)-motor_left_position_start;
 			int mvt_counter_right = get_motor_position_counter(RIGHT_PORT_WHEEL)-motor_right_position_start;
 			
-			int wheel_difference = mvt_counter_right*1.015 - mvt_counter_left*0.975;
+			int wheel_difference = mvt_counter_right*1.02 - mvt_counter_left*0.975;
 			
 			if(wheel_difference < CORRECTION_THRESHOLD && wheel_difference > -CORRECTION_THRESHOLD){//If both are within the same range, wheels are going straight
 				mav(RIGHT_PORT_WHEEL, Speed);
@@ -354,12 +355,12 @@ void Move_X_Millimeters(int Direction, float distMillimeters, int SetSpeed, doub
 				msleep(5);
 				printf("STRAIGHT: left: %d right: %d diff: %d\n", mvt_counter_left, mvt_counter_right, wheel_difference);
 			}
-			else if(mvt_counter_right*1.015 > mvt_counter_left*0.975){//right wheel is ahead of left wheel
+			else if(mvt_counter_right*1.02 > mvt_counter_left*0.975){//right wheel is ahead of left wheel
 				mav(RIGHT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
 				printf("RIGHT diff: %d\n", wheel_difference);
 				msleep(5);
 			}
-			else if(mvt_counter_left*0.975 > mvt_counter_right*1.015){//left wheel is ahead of right wheel
+			else if(mvt_counter_left*0.975 > mvt_counter_right*1.02){//left wheel is ahead of right wheel
 				mav(LEFT_PORT_WHEEL, Speed * CORRECTION_REDUCTION); //correction speeed is 80% of fwd speed
 				printf("LEFT diff: %d\n", wheel_difference);
 				msleep(5);
