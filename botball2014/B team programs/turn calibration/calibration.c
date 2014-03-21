@@ -1,9 +1,15 @@
 // Created on Thu February 6 2014
 //quick and dirty program to see if mav API is more reliable than motor
 //to improve dead recknoning outcome.
+#define IR_SENSOR 0
+#define IR_SENSOR_THRESHOLD 180
+
+#define ADJUST_SPEED 0.70
 #define RIGHT_MOTOR 2
 #define LEFT_MOTOR 0
-#define SPEED_FWD 700
+#define SPEED_FWD_SLOW 400
+#define SPEED_FWD 800
+#define SPEED_FWD_HIGH_SPEED 1000
 #define SPEED_BWD -700
 #define RIGHT 76
 #define LEFT 57
@@ -15,8 +21,17 @@
 #define DOWN_SERVO 1015
 #define UP_SERVO_CUBE 1500
 #define DOWN_SERVO_CUBE 1398
+
+#define CHECK_IR_SENSOR 101
+#define NO_CHECK_IR_SENSOR 197
+#define DEBUG 10
+#define NO_DEBUG 12
+
 //declaration
-void moveForward(double distanceInInches); 
+void moveForward(double distanceInInches, int debug);
+void moveForwardRoutine(double distanceInInches, int checkIRSensor, int speed, int debug);
+void reset_motors();
+
 void moveBackward(double distanceInInces);
 void rightAngleFwd(int direction);
 void rightAngleBwd(int direction);
@@ -28,10 +43,11 @@ void clawDown();
 
 int main()
 {
-	rightAngleFwd(LEFT);
+	moveForward(63,DEBUG);
 	
 	return 0;
 }
+
 /*
 trying a new way for move foward and backward
 //convenience function to make code reading easier
@@ -56,48 +72,77 @@ void moveForward(double distanceInInches) {
 	//printf("done moving %d...", distanceInInches);
 }
 */
-//uses a home made mrp (move to relative position) and convert from inches
-//to motor units.
-void moveForward(double distanceInInches) {
-	//printf("starting to move for %d\n",distanceInInches);
+void moveForward(double distanceInInches, int debug) {	
+	moveForwardRoutine(distanceInInches, NO_CHECK_IR_SENSOR, SPEED_FWD_HIGH_SPEED, debug);
+}
+
+
+
+
+//moves forward with light sensor
+void moveForwardRoutine(double distanceInInches, int checkIRSensor, int speed, int debug) {
+	//checkLightSensor	do not check light sensor: see #define values
+	//                do check light sensor and stop when it is over black or void
 	//convert inches to clicks
 	int clicks =(int) (156.25l * distanceInInches);
 	int initial_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int initial_position_left = get_motor_position_counter(LEFT_MOTOR);
-	
 	int current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 	int current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	int differential  = 0 ;
+	//we will keep moving until both motors have covered their distance or
+	//the light sensor is tripped
 	while (current_position_left <= (initial_position_left + clicks) ||
-		current_position_right <= (initial_position_right + clicks) ) {
-		
+		current_position_right <= (initial_position_right + clicks)   )	{
+		//let's get out if the sensor is on
+		if (checkIRSensor == CHECK_IR_SENSOR && analog(IR_SENSOR) > IR_SENSOR_THRESHOLD) 			{
+			if (debug == DEBUG) {
+				printf("exiting because of light sensor");
+			}
+			break;
+		}
 		//first let's see if one motor is going ahead of the other
 		differential = current_position_left - initial_position_left - 
 				(current_position_right - initial_position_right);
+			if (debug == DEBUG) {
+				printf("sensor value: %d lightsensor %d \n", analog(IR_SENSOR),checkIRSensor);
+			}
 		if (differential > -25 && differential < 25 ) {
 		//counter are around the same 
-			mav(RIGHT_MOTOR, SPEED_FWD);
-			mav(LEFT_MOTOR, SPEED_FWD);
+			mav(RIGHT_MOTOR, speed);
+			mav(LEFT_MOTOR, speed);
 		} else if (differential < 0 ) {
 		//right has moved ahead, let's slow down right until left catches up
-			mav(RIGHT_MOTOR, SPEED_FWD/2);
-			mav(LEFT_MOTOR, SPEED_FWD);
-			printf("move fwd:correction right: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+			mav(RIGHT_MOTOR,(int) (speed*ADJUST_SPEED));
+			mav(LEFT_MOTOR, speed);
+			if (debug == DEBUG) {
+				printf("adjusting LEFT L: %d R: %d\n", (current_position_left - 				initial_position_left), (current_position_right - initial_position_right));
+			}
 		} else {
 		//left has moved ahead, let's slow down left until right catches up
-			mav(RIGHT_MOTOR, SPEED_FWD);
-			mav(LEFT_MOTOR, SPEED_FWD/2);
-			printf("move fwd:correction left: r %d, l %d", (current_position_right - initial_position_right), (current_position_left - initial_position_left));
+			mav(RIGHT_MOTOR, speed);
+			mav(LEFT_MOTOR, (int) (speed*ADJUST_SPEED));
+			if (debug == DEBUG) {
+				printf("adjusting RIGHT L: %d R: %d\n", (current_position_left - initial_position_left), (current_position_right - initial_position_right));
+			}
 		}
-		msleep(100);
+		msleep(25);
 		current_position_right = get_motor_position_counter(RIGHT_MOTOR);
 		current_position_left = get_motor_position_counter(LEFT_MOTOR);
 	}
-	
-	//printf("done moving %d...", distanceInInches);
+	//turn off motors completely
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
+	ao();
+	reset_motors();
 }
 
-
+void reset_motors(){
+	//resets the motor counters
+	mav(RIGHT_MOTOR, 0);
+	mav(LEFT_MOTOR,0);
+	msleep(200);
+}
 //uses a home made mrp (move to relative position) and convert from inches
 //to motor units.
 void moveBackward(double distanceInInches) {
