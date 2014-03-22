@@ -14,13 +14,15 @@
 
 
 
-#define FORWARD_CONSTANT 275
-#define BACKWARD_CONSTANT 250
-#define RIGHT_ANG_LEFT 1960
-#define RIGHT_ANG_RIGHT 1840
 
-#define SPEED_FWD 100
-#define SPEED_BWD -100
+#define RIGHT_ANG_LEFT 1990
+#define RIGHT_ANG_RIGHT 1990
+#define FORWARD_CONSTANT 100
+#define BACKWARD_CONSTANT 95
+
+#define HALF_CIRCLE 3800
+#define SPEED_FWD 250
+#define SPEED_BWD -250
 #define CHANNELS 1
 #define DEBUG 100
 #define NO_DEBUG 51
@@ -48,10 +50,13 @@ int main()
 	camera_open(LOW_RES);
 	printf("1.0 after initialization\n");
 
-	msleep(1500);	
+
+	//place create for camera recognition of cube positions
 	forward(9);
 	rightAngle(LEFT);
-	forward(20);
+	forward(15);
+	rightAngle(RIGHT);
+
 	calibrateCamera();
 	
 	printf("the end...\n");
@@ -119,14 +124,14 @@ int getShelfPlacement(int xLocation) {
 }
 //generic right angle turn in place
 void rightAngle (int direction){
-	create_drive_straight(SPEED_FWD);
+	
 	if (direction == RIGHT) { 
 		//then well turn 90 deg to the RIGHT
-		create_spin_CW(SPEED_FWD);
+		create_spin_CW(100);
 		msleep(RIGHT_ANG_RIGHT);
 	} else if (direction == LEFT) {
 		//then well turn 90 deg to the LEFT
-		create_spin_CCW(SPEED_FWD);
+		create_spin_CCW(100);
 		msleep(RIGHT_ANG_LEFT);
 	} else {
 		printf("sorry I don't understand what you want me to do... ignoring right angle turn command\n");
@@ -134,12 +139,7 @@ void rightAngle (int direction){
 	create_stop();
 }
 
-//generic right angle turn in place
-void turnCreate (int time){
-	create_spin_CW(SPEED_FWD);
-	msleep(time);
-	create_stop();
-}
+
 
 
 //generic move forward function calibrated in inches

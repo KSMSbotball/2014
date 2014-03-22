@@ -3,6 +3,14 @@
 //
 //Cube position (x coordinate), change when calibrating channel if needed
 //see program camera calibration routine
+#define RIGHT_ANG_LEFT 2000
+#define RIGHT_ANG_RIGHT 2000
+
+//from right PVC by Upper storage area to before right angle right
+#define FORWARD_FROM_BASE 4.6
+// distance after the right angle right to picking up the cube
+#define UP_TO_CUBE 10.5
+
 #define POS_7 6
 #define POS_6 20
 #define POS_5 55
@@ -11,25 +19,23 @@
 #define POS_2 147
 #define POS_1 170
 
-#define STANDRD_LENGTH 6.5
-#define FORWARD_TO_CUBE 7.5
+
 #define CUBE_WIDTH 2
 
 #define CLAW_CLOSE 500
-#define CLAW_OPEN 920
+#define CLAW_OPEN 950
 
 
 
 #define CLAW_SERVO 1
 #define CLAW_OPENING_INCREMENT 5
 #define CLAW_CLOSING_INCREMENT -5
-#define FORWARD_CONSTANT 275
-#define BACKWARD_CONSTANT 250
-#define RIGHT_ANG_LEFT 2000
-#define RIGHT_ANG_RIGHT 2000
+#define FORWARD_CONSTANT 100
+#define BACKWARD_CONSTANT 95
+
 #define HALF_CIRCLE 3800
-#define SPEED_FWD 100
-#define SPEED_BWD -100
+#define SPEED_FWD 250
+#define SPEED_BWD -250
 #define CHANNELS 1
 #define DEBUG 100
 #define NO_DEBUG 51
@@ -43,57 +49,67 @@ void clawCloseA(int debug);
 void forward(int inches);
 void backward(int inches);
 void rightAngle(int direction);
-void turnCreate(int time);
-void approachYellowCube(int debug);
-void dropCube(int fromLocation);
-void goToBase();
+
+void dropCubes(int cube1, int cube2);
+
 void pushSideToSide();
 void determineCubePositions(int* positions, int debug);
-void goGrabCubeAtPosition(int position);
+
 int getShelfPlacement(int xLocation);
 
 
 
 int main()
 {
-	printf("beginning pgm\n");
+	
 	create_connect();
 	enable_servos();
 	camera_open(LOW_RES);
 //	wait_for_light(1);
 	shut_down_in(115);
-	printf("2.1 after initialization\n");
+	printf("3.0 HD version 03/21/14 after initialization\n");
 	int startTime = seconds();
 	msleep(1500);	
-	msleep(5000);
-	printf("opening claw...\n");
+	//msleep(27000);
+	
 	clawOpen();
 	//place create for camera recognition of cube positions
 	forward(9);
 	rightAngle(LEFT);
-	forward(20);
+	forward(15);
+	rightAngle(RIGHT);
+	printf("Camera work\n");
 	int positions[2] = {-1, -1};
-	//determineCubePositions(positions, DEBUG);
-	positions[0] = 2;
-	positions[1]  = 6;
-	printf("back from looking camera usage. elapsed time: %f s\n", (seconds() - startTime));
+	determineCubePositions(positions, DEBUG);
+	printf("back from looking camera usage. positions: %d, %d, elapsed time: %f s\n", positions[0], positions[1], (seconds() - startTime));
 	//start routine to go grab the cubes
-	if (positions[0] != -1) {
-		//position create at the standard starting position
-		goToBase();
-		goGrabCubeAtPosition(positions[0]);
-		/*dropCube(positions[0]);
-		printf("should have dropped cube 1, elapsed time: %f s.\n", (seconds() - startTime));
-		//create just dropped a cube and is back at the starting location ready for number 2
-		goGrabCubeAtPosition(positions[1]);
-		dropCube(positions[1]);
-		*/
-		printf("should have dropped cube 2, the end. elapsed time: %f s\n", (seconds() - startTime));
-	} else { 
-		printf("the camera did not get any hits... sorry bad run.\n");
-		goToBase();
+	if (positions[0] == -1) {
+		//the program did not find any objects based on the channel
+		// so time for random guesses rather than doing nothing
+		positions[0] = 2;
+		positions[1] = 5;
+	} else if (positions [1] == -1) {
+		positions[1] = 5;
 	}
+	rightAngle(LEFT);
 	
+	rightAngle(LEFT);
+	backward(16.5);
+	pushSideToSide();
+	//forward(5);
+	
+	
+	
+	//position create at the standard starting position
+	
+	dropCubes(positions[0], positions[1]);
+		
+
+	printf("All done. elapsed time: %f s\n", (seconds() - startTime));
+	//moving out of the way now
+	forward(10); 
+	rightAngle(RIGHT);
+	backward(17);
 	camera_close();
 	create_disconnect();
 	return 0;
@@ -120,7 +136,7 @@ void determineCubePositions(int* positions,  int debug) {
 		return;
 	}
 	//one more update
-	msleep(2000); 
+	msleep(1000); 
 	camera_update();
 	if (debug == DEBUG) {		
 		printf ("====> for channel %d, object count %d \n", channel, get_object_count(channel));
@@ -166,48 +182,18 @@ void determineCubePositions(int* positions,  int debug) {
 		}
 		i++;
 	}
-	//since the camera can't see position 7 we will have to assume that if the camera only saw 1 cube the other one is at palcement 7
-	if (areas[1] < 100) {
-		positions[1] = 7;
+	//we want the lowest number to be first, so switch values if they are in reverse order
+	if (positions[0] > positions[1]) {
+		int interim = positions[0];
+		positions[0] = positions[1];
+		positions[1] = interim;
 	}
 
 }
 
-//goes and picks up the cube based on the shelf location this is dead reckoning but create is very accurate
-void goGrabCubeAtPosition(int location) { 
-	//the claw should be opened but just in case
-	clawOpen();
-	forward(STANDRD_LENGTH + location * CUBE_WIDTH);
-	rightAngle(RIGHT);
-	//go up to pick it up
-	//forward(FORWARD_TO_CUBE);
-	//we should now secure teh cube
-	//clawClose(NO_DEBUG);
-		
-}
 
-//goes from picking up the cube to dropping it off in the upper storage area
-void dropCube(int fromLocation) { 
-	backward(8);
-	rightAngle(LEFT);
-	backward((STANDRD_LENGTH +  fromLocation * CUBE_WIDTH + 1) );
-	pushSideToSide();
-	forward(3);
-	
-	turnCreate(HALF_CIRCLE);
-	clawOpen();
-	turnCreate(HALF_CIRCLE);
-	backward(3);
-	pushSideToSide();
-		
-}
-//goes to position where bot is ready to go pick up square
-void goToBase() { 
-	backward(4);
-	rightAngle(LEFT);
-	backward(13);
-	pushSideToSide();
-}
+
+
 
 //return the shelf placement based on predefined values
 int getShelfPlacement(int xLocation) {
@@ -262,14 +248,14 @@ void clawClose(int debug) {
 
 //generic right angle turn in place
 void rightAngle (int direction){
-	create_drive_straight(SPEED_FWD);
+	
 	if (direction == RIGHT) { 
 		//then well turn 90 deg to the RIGHT
-		create_spin_CW(SPEED_FWD);
+		create_spin_CW(100);
 		msleep(RIGHT_ANG_RIGHT);
 	} else if (direction == LEFT) {
 		//then well turn 90 deg to the LEFT
-		create_spin_CCW(SPEED_FWD);
+		create_spin_CCW(100);
 		msleep(RIGHT_ANG_LEFT);
 	} else {
 		printf("sorry I don't understand what you want me to do... ignoring right angle turn command\n");
@@ -277,20 +263,69 @@ void rightAngle (int direction){
 	create_stop();
 }
 
-//generic right angle turn in place
-void turnCreate (int time){
-	create_spin_CW(SPEED_FWD);
-	msleep(time);
-	create_stop();
+
+//pcik up and drop cubes
+
+void dropCubes(int cube1, int cube2) {
+	
+	clawOpen();
+
+	backward(1);
+	msleep(300);
+	//place create for camera recognition of cube positions
+	forward(FORWARD_FROM_BASE + 2*cube1 );
+	rightAngle(RIGHT);
+	msleep(300);
+	forward(UP_TO_CUBE);
+	msleep(300);
+	clawClose(NO_DEBUG);
+	backward(UP_TO_CUBE + 0.5);
+	msleep(300);
+	rightAngle(RIGHT);
+	msleep(300);
+	forward(FORWARD_FROM_BASE + 2* cube1);
+	msleep(300);
+	clawOpen();
+	backward(2);
+	rightAngle(RIGHT);
+	msleep(300);
+	rightAngle(RIGHT);
+	msleep(300);
+	backward(3);
+	pushSideToSide();
+	
+	//cube 2
+	forward(FORWARD_FROM_BASE + 2*cube2);
+	msleep(300);
+	rightAngle(RIGHT);
+	msleep(300);
+	forward(UP_TO_CUBE - 1);
+	msleep(300);
+	clawClose(NO_DEBUG);
+	msleep(300);
+	backward(UP_TO_CUBE - 0.5);
+	msleep(300);
+	rightAngle(RIGHT);
+	msleep(300);
+	forward(FORWARD_FROM_BASE + 2 * cube2);
+	msleep(300);
+	clawOpen();
+	backward(2);
+	msleep(300);
+	rightAngle(RIGHT);
+	rightAngle(RIGHT);
+	backward(3);
+	pushSideToSide();
 }
+
 
 //wiggle from side to side to get recalibrated againt PVC
 void pushSideToSide (){
 	create_drive_direct(SPEED_BWD,0);
-	msleep(1000);
+	msleep(500);
 	create_stop();
 	create_drive_direct(0, SPEED_BWD);
-	msleep(1000);
+	msleep(500);
 	create_stop();
 }
 
