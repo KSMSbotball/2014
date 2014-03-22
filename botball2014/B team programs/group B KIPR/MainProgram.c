@@ -1,11 +1,11 @@
 #define IR_SENSOR 0
-#define IR_SENSOR_THRESHOLD 150
+#define IR_SENSOR_THRESHOLD 800
 //less than 1 will make the robot go more towards the right
 //more than 1 will make the robot go more left (should be between 0.95 and 1.05)
 #define MOTOR_CORRECTION_FACTOR_LEFT 0.95;
 
-//#define DOWN_SERVO 1000
-#define DOWN_SERVO 1025
+#define DOWN_SERVO 1000
+//#define DOWN_SERVO 1025
 #define UP_SERVO 1900
 #define UP_SERVO_CUBE 1900
 #define ALMOST_DOWN_SERVO_CUBE 1480
@@ -77,8 +77,8 @@ int main()
 	enable_servos();
 	clear_motor_position_counter(RIGHT_MOTOR);
 	clear_motor_position_counter(LEFT_MOTOR);
-	//wait_for_light(1);
-	//shut_down_in(118);	
+	wait_for_light(1);
+	shut_down_in(118);	
 	clawUp();
 	//**************************************
 	//* PART 1 : get first set of poms to lower storage area
@@ -131,7 +131,7 @@ int main()
 
 	//====>>>>> may have to be adjust the day of competition based on position of 2nd
 	//====>>>>> set of poms
-	moveForwardHighSpeed(17, NO_DEBUG);
+	moveForwardHighSpeed(15, NO_DEBUG);
 	//====>>>>>
 
 	clawAlmostDownCube();
@@ -162,7 +162,7 @@ int main()
 	//**************************************
 	//recalibrate against side PVC
 	rightAngleBwd(RIGHT, NO_DEBUG);
-	moveBackwardHighSpeed(15, NO_DEBUG);		
+	moveBackwardHighSpeed(25, NO_DEBUG);		
 	moveForward(5, NO_DEBUG);
 	//calibrating with top PVC
 	rightAngleBwd(LEFT,NO_DEBUG);

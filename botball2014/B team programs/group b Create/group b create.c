@@ -63,20 +63,25 @@ int main()
 {
 	
 	create_connect();
+	printf("connected to create\n");
 	enable_servos();
 	camera_open(LOW_RES);
-//	wait_for_light(1);
-	shut_down_in(115);
+	printf("opened camera\n");
+	//wait_for_light(1);
+	shut_down_in(118);
 	printf("3.0 HD version 03/21/14 after initialization\n");
 	int startTime = seconds();
 	msleep(1500);	
+	printf("msleep started\n");
 	//msleep(27000);
 	
 	clawOpen();
 	//place create for camera recognition of cube positions
 	forward(9);
+	printf("moving forward 9 inches\n");
 	rightAngle(LEFT);
 	forward(15);
+	printf("moving forward 15 inches\n");
 	rightAngle(RIGHT);
 	printf("Camera work\n");
 	int positions[2] = {-1, -1};

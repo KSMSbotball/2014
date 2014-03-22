@@ -9,8 +9,8 @@
 #define FORWARD_FROM_BASE 4.6
 #define UP_TO_CUBE 9.5
 
-#define CUBE_1 3
-#define CUBE_2 5
+#define CUBE_1 2
+#define CUBE_2 6
 
 #define POS_7 6
 #define POS_6 20
@@ -62,7 +62,7 @@ int getShelfPlacement(int xLocation);
 
 int main()
 {
-	printf("beginning pgm\n");
+	printf("beginning pgm\n");	
 	create_connect();
 	enable_servos();
 	camera_open(LOW_RES);
@@ -73,17 +73,10 @@ int main()
 	
 	printf("opening claw...\n");
 	clawOpen();
-/*	rightAngle(LEFT);
-	msleep(300);
-	rightAngle(LEFT);
-	msleep(300);
-	rightAngle(LEFT);
-	msleep(300);
-	rightAngle(LEFT);
-*/
+	
 	forward(10); 
 	//backward(9);
-/*	backward(1);
+	backward(1);
 	msleep(300);
 	//place create for camera recognition of cube positions
 	forward(FORWARD_FROM_BASE + 2*CUBE_1);
@@ -129,7 +122,7 @@ int main()
 	rightAngle(RIGHT);
 	backward(3);
 	pushSideToSide();
-	*/
+	
 	camera_close();
 	create_disconnect();
 	return 0;
