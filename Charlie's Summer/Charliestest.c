@@ -7,21 +7,16 @@
 int main ()
 {
 	//Program Starts here
+	//kipr_drive_distance(float distanceCm, float speed, int direction);
+	//kipr_spin_degrees(int degrees, int speed, int direction);
 	
-	//Call method GoStraight
-	//TickCounter(10000);
-	//lego_spin_degrees(360,100, FWD);
-	kipr_drive_distance(300,100,FWD);
-	//MoveForwardMillimeters(2000, 1000);
+	kipr_drive_distance(10, 75, FWD);
+	kipr_spin_degrees(360, 75, LEFT);
+	kipr_drive_distance(10, 100, FWD);
 	
-	//GoStraight(7000,FAST);
-	//TurnRight90();
-	//GoStraight(12000,FAST);
-	//Slant();
-	//GoStraight(9000,FAST);
-	//CorrectionRight(750,500);
-	//GoStraight(5000,FAST);
-	//BackUp();
+	//SpinTickCounter(720, 50, LEFT);
+	
+	
 	//Program ends here
 	return 0;
 }

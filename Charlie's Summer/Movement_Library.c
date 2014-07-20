@@ -86,13 +86,3 @@ void MoveForwardMillimeters(int mmToGo, int Speed)
 	ao();
 }
 
-void TickCounter(int TicksToGo)
-{
-	clear_motor_position_counter(RIGHT_PORT_WHEEL);
-	printf("Start Ticks: %d\n", get_motor_position_counter(RIGHT_PORT_WHEEL));
-	motor(RIGHT_PORT_WHEEL, 100);
-	msleep(15000);
-	printf("End Ticks: %d\n", get_motor_position_counter(RIGHT_PORT_WHEEL));
-	
-	
-}
